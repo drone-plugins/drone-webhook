@@ -4,6 +4,8 @@ You will need to supply Drone with outgoing Webhook URLs.
 The following parameters are used to configure outgoing Webhooks:
 
 * `urls` - JSON payloads are sent to each URL listed here
+* `method` - HTTP request method. Defaults to `POST`
+* `header` - HTTP request header map
 
 The following is a sample Webhook configuration in your .drone.yml file:
 
@@ -13,6 +15,8 @@ notify:
     urls:
       - https://your.webhook/...
       - https://your.other.webhook/...
+    header:
+      Authorization: pa55word
 ```
 
 The following is an example Webhook payload (whitespace added):
@@ -57,4 +61,26 @@ The following is an example Webhook payload (whitespace added):
         "trusted": false
     }
 }
+```
+
+## Custom Body
+
+In some cases you may want to submit a custom payload in the body of your hook. For the use case we expose the following additional parameters:
+
+* `template` - Go template to create a custom payload body. See [docs](https://golang.org/pkg/text/template/)
+* `content_type` - HTTP request content type
+
+Example configuration that generate a custom Yaml payload:
+
+```yaml
+notify:
+  webhook:
+    urls:
+      - https://your.webhook/...
+      - https://your.other.webhook/...
+    content_type: application/yaml
+    template: >
+      repo: {{.Repo.FullName}}
+      build: {{.Build.Number}}
+      commit: {{.Build.Commit}}
 ```
