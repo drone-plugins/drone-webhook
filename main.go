@@ -108,7 +108,7 @@ func main() {
 		}
 		defer resp.Body.Close()
 
-		if vargs.Verbose {
+		if vargs.Verbose || os.Getenv("DEBUG") == "true" {
 
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {

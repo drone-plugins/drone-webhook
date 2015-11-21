@@ -12,10 +12,10 @@ build:
 
 publish:
   docker:
-    username: drone
+    username: jackspirou
     password: $$DOCKER_PASS
     email: $$DOCKER_EMAIL
-    repo: plugins/drone-webhook
+    repo: jackspirou/drone-webhook
     when:
       branch: master
 
@@ -23,7 +23,7 @@ plugin:
   name: Webhook
   desc: Send webhook notifications when your build completes.
   type: notify
-  image: plugins/drone-webhook
+  image: jackspirou/drone-webhook
   labels:
     - rest
     - json
