@@ -49,9 +49,13 @@ func main() {
 	// creates the payload. by default the payload
 	// is the build details in json format, but a custom
 	// template may also be used.
-	var buf bytes.Buffer
+	var buf *bytes.Buffer
+	var reqBytes []byte
 	if len(vargs.Template) == 0 {
-		json.NewEncoder(&buf).Encode(&data)
+		json.NewEncoder(buf).Encode(&data)
+		b := buf.Bytes()
+		buf = bytes.NewBuffer(b)
+		reqBytes = b
 	} else {
 
 		t, err := template.New("_").Parse(vargs.Template)
@@ -60,11 +64,14 @@ func main() {
 			os.Exit(1)
 		}
 
-		t.Execute(&buf, &data)
+		t.Execute(buf, &data)
 		if err != nil {
 			fmt.Printf("Error executing content template. %s\n", err)
 			os.Exit(1)
 		}
+		b := buf.Bytes()
+		buf = bytes.NewBuffer(b)
+		reqBytes = b
 	}
 
 	// build and execute a request for each url.
@@ -80,7 +87,7 @@ func main() {
 		}
 
 		// vargs.Method defaults to POST, no need to check
-		req, err := http.NewRequest(vargs.Method, uri.String(), &buf)
+		req, err := http.NewRequest(vargs.Method, uri.String(), buf)
 		if err != nil {
 			fmt.Printf("Error creating http request. %s\n", err)
 			os.Exit(1)
@@ -118,12 +125,14 @@ func main() {
 			}
 
 			// scrub out basic auth pass
-			if len(vargs.Auth.Password) > 0 {
-				req.SetBasicAuth(vargs.Auth.Username, "XXXXX")
-			}
+			/*
+				if len(vargs.Auth.Password) > 0 {
+					req.SetBasicAuth(vargs.Auth.Username, "XXXXX")
+				}
+			*/
 
 			// print out
-			fmt.Printf("%d URL: %s\n  METHOD: %s\n  HEADERS: %s\n  BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE: %s", i+1, req.URL, req.Method, req.Header, req.Body, resp.Status, string(body))
+			fmt.Printf("Webhook URL %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE: %s\n", i+1, req.URL, req.Method, req.Header, string(reqBytes), resp.Status, string(body))
 		}
 	}
 }
