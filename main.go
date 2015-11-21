@@ -113,6 +113,9 @@ func main() {
 		}
 		defer resp.Body.Close()
 
+		fmt.Println(vargs.Debug)
+		fmt.Println(os.Getenv("DEBUG"))
+
 		if vargs.Debug || os.Getenv("DEBUG") == "true" {
 
 			body, err := ioutil.ReadAll(resp.Body)
