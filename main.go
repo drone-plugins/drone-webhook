@@ -125,6 +125,17 @@ func main() {
 
 			// debug print
 			fmt.Printf("[debug] Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n", i+1, req.URL, req.Method, req.Header, string(b), resp.Status, string(body))
+
+		} else if resp.StatusCode >= http.StatusBadRequest {
+
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				// I do not think we need to os.Exit(1) if we are
+				// unable to read a http response body.
+				fmt.Printf("Error reading http response body. %s\n", err)
+			}
+
+			fmt.Printf("[info] Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n", i+1, req.URL, resp.Status, string(body))
 		}
 	}
 }
