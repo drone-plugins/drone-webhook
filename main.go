@@ -123,7 +123,7 @@ func main() {
 			}
 
 			// print out
-			fmt.Printf("%d\n	URL: %s\n	METHOD: %s\n HEADERS: %s\n	BODY: %s\n		RESPONSE STATUS: %s\n		RESPONSE: %s", i+1, req.URL, req.Method, req.Header, req.Body, resp.Status, string(body))
+			fmt.Printf("%d URL: %s\n  METHOD: %s\n  HEADERS: %s\n  BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE: %s", i+1, req.URL, req.Method, req.Header, req.Body, resp.Status, string(body))
 		}
 	}
 }
