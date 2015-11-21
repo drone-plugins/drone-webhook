@@ -84,3 +84,76 @@ notify:
       build: {{.Build.Number}}
       commit: {{.Build.Commit}}
 ```
+
+## Basic Authentication
+
+>It is important to note that with HTTP Basic Authentication the provided username and password are not encrypted.
+
+In some cases your webhook may need to authenticate with another service.  You can set the basic `Authentication` header with a username and password.  For these use cases we expose the following additional parameters:
+
+* `auth` - Sets the request's `Authorization` header to use HTTP Basic Authentication with the provided username and password below.
+  * `username` - The username as a string.
+  * `password` - The password as a string.
+
+Example configuration to include HTTP Basic Authentication:
+
+```yaml
+notify:
+  webhook:
+    method: POST
+    auth:
+      username: $$USERNAME
+      password: $$PASSWORD
+    urls:
+      - https://tower.example.com/...
+    content_type: application/yaml
+    template: >
+      repo: {{.Repo.FullName}}
+      build: {{.Build.Number}}
+      commit: {{.Build.Commit}}
+```
+
+## Debugging Webhooks
+
+>If you have private variables that are encrypted and hidden in `.drone.sec`, remember that the `debug` flag may print out those sensitive values.  Please use `dubug: true` wisely.
+
+In some cases complicated webhooks may need debugging to ensure `urls`, `template`, `auth` and more a properly configured. For these use cases we expose the following `debug` parameter:
+
+* `debug` - If `debug: true` it will print out each URL request and response information.
+
+Example configuration to include the `debug` parameter:
+
+```yaml
+notify:
+  webhook:
+    debug: true
+    method: POST
+    auth:
+      username: $$TOWER_USER
+      password: $$TOWER_PASS
+    urls:
+      - http://tower.example.com/api/v1/job_templates/44/launch/
+      - http://tower.example.com/api/v1/job_templates/45/launch/
+      content_type: application/json
+      template: '{"name": "project.deploy","extra_vars": "{\"env\": \"dev\",\"git_branch\": \"{{ .Build.Branch }}\",\"hipchat_token\": \"$$HIPCHAT_TOKEN\"}"}'
+```
+
+Example of a debug print result:
+
+```yaml
+[debug] Webhook 1
+  URL: http://tower.example.com/api/v1/job_templates/44/launch/
+  METHOD: POST
+  HEADERS: map[Content-Type:[application/json] Authorization:[Basic EMfNB3fakB8EMfNB3fakB8==]]
+  REQUEST BODY: {"name": "project.deploy","extra_vars": "{\"env\": \"dev\",\"git_branch\": \"develop\",\"hipchat_token\": \"h1pchatT0k3n\"}"}
+  RESPONSE STATUS: 202 ACCEPTED
+  RESPONSE BODY: {"job": 236}
+
+[debug] Webhook 2
+  URL: http://tower.example.com/api/v1/job_templates/45/launch/
+  METHOD: POST
+  HEADERS: map[Content-Type:[application/json] Authorization:[Basic EMfNB3fakB8EMfNB3fakB8==]]
+  REQUEST BODY: {"name": "project.deploy","extra_vars": "{\"env\": \"dev\",\"git_branch\": \"develop\",\"hipchat_token\": \"h1pchatT0k3n\"}"}
+  RESPONSE STATUS: 202 ACCEPTED
+  RESPONSE BODY: {"job": 406}
+```
