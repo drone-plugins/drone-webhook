@@ -52,8 +52,9 @@ func main() {
 	var buf *bytes.Buffer
 	var reqBytes []byte
 	if len(vargs.Template) == 0 {
-		json.NewEncoder(buf).Encode(&data)
-		b := buf.Bytes()
+		var t bytes.Buffer
+		json.NewEncoder(&t).Encode(&data)
+		b := t.Bytes()
 		buf = bytes.NewBuffer(b)
 		reqBytes = b
 	} else {
