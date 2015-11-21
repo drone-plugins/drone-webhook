@@ -98,6 +98,7 @@ func main() {
 
 		// set basic auth if a user or user and pass is provided
 		if len(vargs.Auth.Username) > 0 {
+			fmt.Println("setting basic auth")
 			if len(vargs.Auth.Password) > 0 {
 				req.SetBasicAuth(vargs.Auth.Username, vargs.Auth.Password)
 			} else {
