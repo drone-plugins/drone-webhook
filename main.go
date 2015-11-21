@@ -16,8 +16,6 @@ import (
 
 func main() {
 
-	fmt.Println(os.Getenv("DEBUG"))
-
 	// plugin settings
 	var repo = drone.Repo{}
 	var build = drone.Build{}
@@ -114,8 +112,10 @@ func main() {
 		}
 		defer resp.Body.Close()
 
-		if vargs.Debug || os.Getenv("DEBUG") == "true" {
+		// if debug is on or response status code is bad
+		if vargs.Debug || resp.StatusCode >= http.StatusBadRequest {
 
+			// read the response body
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				// I do not think we need to os.Exit(1) if we are
@@ -123,19 +123,12 @@ func main() {
 				fmt.Printf("Error reading http response body. %s\n", err)
 			}
 
-			// debug print
-			fmt.Printf("[debug] Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n", i+1, req.URL, req.Method, req.Header, string(b), resp.Status, string(body))
-
-		} else if resp.StatusCode >= http.StatusBadRequest {
-
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				// I do not think we need to os.Exit(1) if we are
-				// unable to read a http response body.
-				fmt.Printf("Error reading http response body. %s\n", err)
+			// debug/info print
+			if vargs.Debug {
+				fmt.Printf("[debug] Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n", i+1, req.URL, req.Method, req.Header, string(b), resp.Status, string(body))
+			} else {
+				fmt.Printf("[info] Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n", i+1, req.URL, resp.Status, string(body))
 			}
-
-			fmt.Printf("[info] Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n", i+1, req.URL, resp.Status, string(body))
 		}
 	}
 }
