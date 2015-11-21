@@ -16,6 +16,8 @@ import (
 
 func main() {
 
+	fmt.Println(os.Getenv("DEBUG"))
+
 	// plugin settings
 	var repo = drone.Repo{}
 	var build = drone.Build{}
@@ -98,7 +100,6 @@ func main() {
 
 		// set basic auth if a user or user and pass is provided
 		if len(vargs.Auth.Username) > 0 {
-			fmt.Println("setting basic auth")
 			if len(vargs.Auth.Password) > 0 {
 				req.SetBasicAuth(vargs.Auth.Username, vargs.Auth.Password)
 			} else {
@@ -112,9 +113,6 @@ func main() {
 			os.Exit(1)
 		}
 		defer resp.Body.Close()
-
-		fmt.Println(vargs.Debug)
-		fmt.Println(os.Getenv("DEBUG"))
 
 		if vargs.Debug || os.Getenv("DEBUG") == "true" {
 
