@@ -2,7 +2,7 @@ package main
 
 type Webhook struct {
 	Urls        []string          `json:"urls"`
-	Verbose     bool              `json:"verbose"`
+	Debug       bool              `json:"debug"`
 	Auth        BasicAuth         `json:"auth"`
 	Headers     map[string]string `json:"header"`
 	Method      string            `json:"method"`

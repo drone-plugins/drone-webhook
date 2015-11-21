@@ -112,7 +112,7 @@ func main() {
 		}
 		defer resp.Body.Close()
 
-		if vargs.Verbose || os.Getenv("DEBUG") == "true" {
+		if vargs.Debug || os.Getenv("DEBUG") == "true" {
 
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
@@ -121,15 +121,8 @@ func main() {
 				fmt.Printf("Error reading http response body. %s\n", err)
 			}
 
-			// scrub out basic auth pass
-			/*
-				if len(vargs.Auth.Password) > 0 {
-					req.SetBasicAuth(vargs.Auth.Username, "XXXXX")
-				}
-			*/
-
-			// print out
-			fmt.Printf("Webhook URL %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE: %s\n", i+1, req.URL, req.Method, req.Header, string(b), resp.Status, string(body))
+			// debug print
+			fmt.Printf("[debug] Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n", i+1, req.URL, req.Method, req.Header, string(b), resp.Status, string(body))
 		}
 	}
 }
