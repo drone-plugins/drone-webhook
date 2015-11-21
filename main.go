@@ -49,14 +49,12 @@ func main() {
 	// creates the payload. by default the payload
 	// is the build details in json format, but a custom
 	// template may also be used.
-	var buf *bytes.Buffer
-	var reqBytes []byte
+	var buf bytes.Buffer
 	if len(vargs.Template) == 0 {
-		var t bytes.Buffer
-		json.NewEncoder(&t).Encode(&data)
-		b := t.Bytes()
-		buf = bytes.NewBuffer(b)
-		reqBytes = b
+		if err := json.NewEncoder(&buf).Encode(&data); err != nil {
+			fmt.Printf("Error encoding content template. %s\n", err)
+			os.Exit(1)
+		}
 	} else {
 
 		t, err := template.New("_").Parse(vargs.Template)
@@ -65,13 +63,10 @@ func main() {
 			os.Exit(1)
 		}
 
-		if err := t.Execute(buf, &data); err != nil {
+		if err := t.Execute(&buf, &data); err != nil {
 			fmt.Printf("Error executing content template. %s\n", err)
 			os.Exit(1)
 		}
-		b := buf.Bytes()
-		buf = bytes.NewBuffer(b)
-		reqBytes = b
 	}
 
 	// build and execute a request for each url.
@@ -87,7 +82,9 @@ func main() {
 		}
 
 		// vargs.Method defaults to POST, no need to check
-		req, err := http.NewRequest(vargs.Method, uri.String(), buf)
+		b := buf.Bytes()
+		r := bytes.NewReader(b)
+		req, err := http.NewRequest(vargs.Method, uri.String(), r)
 		if err != nil {
 			fmt.Printf("Error creating http request. %s\n", err)
 			os.Exit(1)
@@ -132,7 +129,7 @@ func main() {
 			*/
 
 			// print out
-			fmt.Printf("Webhook URL %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE: %s\n", i+1, req.URL, req.Method, req.Header, string(reqBytes), resp.Status, string(body))
+			fmt.Printf("Webhook URL %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE: %s\n", i+1, req.URL, req.Method, req.Header, string(b), resp.Status, string(body))
 		}
 	}
 }
