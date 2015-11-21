@@ -64,8 +64,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		t.Execute(buf, &data)
-		if err != nil {
+		if err := t.Execute(buf, &data); err != nil {
 			fmt.Printf("Error executing content template. %s\n", err)
 			os.Exit(1)
 		}
