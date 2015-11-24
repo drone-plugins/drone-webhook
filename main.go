@@ -8,20 +8,22 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"text/template"
 
 	"github.com/drone/drone-go/drone"
 	"github.com/drone/drone-go/plugin"
+	"github.com/drone/drone-go/template"
 )
 
 func main() {
 
 	// plugin settings
+	var sys = drone.System{}
 	var repo = drone.Repo{}
 	var build = drone.Build{}
 	var vargs = Webhook{}
 
 	// set plugin parameters
+	plugin.Param("system", &sys)
 	plugin.Param("repo", &repo)
 	plugin.Param("build", &build)
 	plugin.Param("vargs", &vargs)
@@ -42,9 +44,10 @@ func main() {
 
 	// data structure
 	data := struct {
-		Repo  drone.Repo  `json:"repo"`
-		Build drone.Build `json:"build"`
-	}{repo, build}
+		System drone.System `json:"system"`
+		Repo   drone.Repo   `json:"repo"`
+		Build  drone.Build  `json:"build"`
+	}{sys, repo, build}
 
 	// creates the payload. by default the payload
 	// is the build details in json format, but a custom
@@ -52,18 +55,16 @@ func main() {
 	var buf bytes.Buffer
 	if len(vargs.Template) == 0 {
 		if err := json.NewEncoder(&buf).Encode(&data); err != nil {
-			fmt.Printf("Error encoding content template. %s\n", err)
+			fmt.Printf("Error encoding json payload. %s\n", err)
 			os.Exit(1)
 		}
 	} else {
-
-		t, err := template.New("_").Parse(vargs.Template)
+		err := template.Write(&buf, vargs.Template, &drone.Payload{
+			Build:  &build,
+			Repo:   &repo,
+			System: &sys,
+		})
 		if err != nil {
-			fmt.Printf("Error parsing content template. %s\n", err)
-			os.Exit(1)
-		}
-
-		if err := t.Execute(&buf, &data); err != nil {
 			fmt.Printf("Error executing content template. %s\n", err)
 			os.Exit(1)
 		}

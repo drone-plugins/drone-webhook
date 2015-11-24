@@ -67,7 +67,7 @@ The following is an example Webhook payload (whitespace added):
 
 In some cases you may want to submit a custom payload in the body of your hook. For the use case we expose the following additional parameters:
 
-* `template` - Go template to create a custom payload body. See [docs](https://golang.org/pkg/text/template/)
+* `template` - Handlebars template to create a custom payload body. See [docs](http://handlebarsjs.com/)
 * `content_type` - HTTP request content type
 
 Example configuration that generate a custom Yaml payload:
@@ -80,9 +80,9 @@ notify:
       - https://your.other.webhook/...
     content_type: application/yaml
     template: >
-      repo: {{.Repo.FullName}}
-      build: {{.Build.Number}}
-      commit: {{.Build.Commit}}
+      repo: {{repo.full_name}}
+      build: {{build.number}}
+      commit: {{build.commit}}
 ```
 
 ## Basic Authentication
@@ -106,11 +106,6 @@ notify:
       password: $$PASSWORD
     urls:
       - https://tower.example.com/...
-    content_type: application/yaml
-    template: >
-      repo: {{.Repo.FullName}}
-      build: {{.Build.Number}}
-      commit: {{.Build.Commit}}
 ```
 
 ## Debugging Webhooks
