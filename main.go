@@ -44,9 +44,10 @@ func main() {
 
 	// data structure
 	data := struct {
-		Repo  drone.Repo  `json:"repo"`
-		Build drone.Build `json:"build"`
-	}{repo, build}
+		System drone.System `json:"system"`
+		Repo   drone.Repo   `json:"repo"`
+		Build  drone.Build  `json:"build"`
+	}{sys, repo, build}
 
 	// creates the payload. by default the payload
 	// is the build details in json format, but a custom
