@@ -1,5 +1,5 @@
 # drone-webhook
-Drone plugin for sending Webhook notifications by [@chromakode](https://github.com/chromakode).
+Drone plugin for sending Webhook notifications.
 
 ## Overview
 
@@ -25,7 +25,18 @@ This plugin is responsible for sending build notifications via Webhooks:
         "author_email": "john.smith@gmail.com"
     },
     "vargs": {
-        "urls": [ "https://your.webhook/..." ]
+      "urls": ["https://your.webhook/..."],
+      "debug": true,
+      "auth": {
+        "username": "johnsmith",
+        "password": "secretPass"
+      },
+      "headers": {
+        "SomeHeader": "SomeHeaderValue"
+      },
+      "method": "POST",
+      "template": "{\"git_branch\": \"{{ .Build.Branch }}\"}",
+      "content_type": "application/json"
     }
 }
 EOF
@@ -63,7 +74,18 @@ docker run -i plugins/drone-webhook <<EOF
         "author_email": "john.smith@gmail.com"
     },
     "vargs": {
-        "urls": [ "https://your.webhook/..." ]
+      "urls": ["https://your.webhook/..."],
+      "debug": true,
+      "auth": {
+        "username": "johnsmith",
+        "password": "secretPass"
+      },
+      "headers": {
+        "SomeHeader": "SomeHeaderValue"
+      },
+      "method": "POST",
+      "template": "{\"git_branch\": \"{{ .Build.Branch }}\"}",
+      "content_type": "application/json"
     }
 }
 EOF
