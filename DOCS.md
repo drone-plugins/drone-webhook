@@ -130,7 +130,7 @@ notify:
       - http://tower.example.com/api/v1/job_templates/44/launch/
       - http://tower.example.com/api/v1/job_templates/45/launch/
       content_type: application/json
-      template: '{"name": "project.deploy","extra_vars": "{\"env\": \"dev\",\"git_branch\": \"{{ .Build.Branch }}\",\"hipchat_token\": \"$$HIPCHAT_TOKEN\"}"}'
+      template: '{"name": "project.deploy","extra_vars": "{\"env\": \"dev\",\"git_branch\": \"{{ build.branch }}\",\"hipchat_token\": \"$$HIPCHAT_TOKEN\"}"}'
 ```
 
 Example of a debug print result:
