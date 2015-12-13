@@ -1,12 +1,11 @@
 # drone-webhook
-Drone plugin for sending Webhook notifications.
 
-## Overview
+Drone plugin for sending notifications via Webhook
 
-This plugin is responsible for sending build notifications via Webhooks:
+## Usage
 
-```sh
-./drone-webhooks <<EOF
+```
+./drone-webhook <<EOF
 {
     "repo" : {
         "owner": "foo",
@@ -44,15 +43,14 @@ EOF
 
 ## Docker
 
-Build the Docker container. Note that we need to use the `-netgo` tag so that
-the binary is built without a CGO dependency:
+Build the Docker container using `make`:
 
-```sh
-CGO_ENABLED=0 go build -a -tags netgo
+```
+make deps build
 docker build --rm=true -t plugins/drone-webhook .
 ```
 
-Send a Webhook notification:
+### Example
 
 ```sh
 docker run -i plugins/drone-webhook <<EOF
