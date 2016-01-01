@@ -55,7 +55,7 @@ func main() {
 		}{system, repo, build}
 
 		if err := json.NewEncoder(&buf).Encode(&data); err != nil {
-			fmt.Printf("Error encoding json payload. %s\n", err)
+			fmt.Printf("Error: Failed to encode JSON payload. %s\n", err)
 			os.Exit(1)
 		}
 	} else {
@@ -66,7 +66,7 @@ func main() {
 		})
 
 		if err != nil {
-			fmt.Printf("Error executing content template. %s\n", err)
+			fmt.Printf("Error: Failed to execute the content template. %s\n", err)
 			os.Exit(1)
 		}
 	}
@@ -80,7 +80,7 @@ func main() {
 		uri, err := url.Parse(rawurl)
 
 		if err != nil {
-			fmt.Printf("Error parsing hook url. %s\n", err)
+			fmt.Printf("Error: Failed to parse the hook URL. %s\n", err)
 			os.Exit(1)
 		}
 
@@ -90,7 +90,7 @@ func main() {
 		req, err := http.NewRequest(vargs.Method, uri.String(), r)
 
 		if err != nil {
-			fmt.Printf("Error creating http request. %s\n", err)
+			fmt.Printf("Error: Failed to create the HTTP request. %s\n", err)
 			os.Exit(1)
 		}
 
@@ -107,7 +107,7 @@ func main() {
 		resp, err := http.DefaultClient.Do(req)
 
 		if err != nil {
-			fmt.Printf("Error executing http request. %s\n", err)
+			fmt.Printf("Error: Failed to execute the HTTP request. %s\n", err)
 			os.Exit(1)
 		}
 
@@ -117,9 +117,7 @@ func main() {
 			body, err := ioutil.ReadAll(resp.Body)
 
 			if err != nil {
-				// I do not think we need to os.Exit(1) if we are
-				// unable to read a http response body.
-				fmt.Printf("Error reading http response body. %s\n", err)
+				fmt.Printf("Error: Failed to read the HTTP response body. %s\n", err)
 			}
 
 			if vargs.Debug {
