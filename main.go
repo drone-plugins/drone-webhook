@@ -33,27 +33,27 @@ func main() {
 	plugin.Param("vargs", &vargs)
 	plugin.MustParse()
 
-	if len(vargs.Method) == 0 {
+	if vargs.Method == "" {
 		vargs.Method = "POST"
 	}
 
-	if len(vargs.ContentType) == 0 {
+	if vargs.ContentType == "" {
 		vargs.ContentType = "application/json"
 	}
 
-	data := struct {
-		System drone.System `json:"system"`
-		Repo   drone.Repo   `json:"repo"`
-		Build  drone.Build  `json:"build"`
-	}{system, repo, build}
-
-	// creates the payload. by default the payload
+	// Creates the payload, by default the payload
 	// is the build details in json format, but a custom
 	// template may also be used.
 
 	var buf bytes.Buffer
 
-	if len(vargs.Template) == 0 {
+	if vargs.Template == "" {
+		data := struct {
+			System drone.System `json:"system"`
+			Repo   drone.Repo   `json:"repo"`
+			Build  drone.Build  `json:"build"`
+		}{system, repo, build}
+
 		if err := json.NewEncoder(&buf).Encode(&data); err != nil {
 			fmt.Printf("Error encoding json payload. %s\n", err)
 			os.Exit(1)
@@ -100,12 +100,8 @@ func main() {
 			req.Header.Set(key, value)
 		}
 
-		if len(vargs.Auth.Username) > 0 {
-			if len(vargs.Auth.Password) > 0 {
-				req.SetBasicAuth(vargs.Auth.Username, vargs.Auth.Password)
-			} else {
-				req.SetBasicAuth(vargs.Auth.Username, "")
-			}
+		if vargs.Auth.Username != "" {
+			req.SetBasicAuth(vargs.Auth.Username, vargs.Auth.Password)
 		}
 
 		resp, err := http.DefaultClient.Do(req)
@@ -127,9 +123,24 @@ func main() {
 			}
 
 			if vargs.Debug {
-				fmt.Printf("[debug] Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n", i+1, req.URL, req.Method, req.Header, string(b), resp.Status, string(body))
+				fmt.Printf(
+					"Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n",
+					i+1,
+					req.URL,
+					req.Method,
+					req.Header,
+					string(b),
+					resp.Status,
+					string(body),
+				)
 			} else {
-				fmt.Printf("[info] Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n", i+1, req.URL, resp.Status, string(body))
+				fmt.Printf(
+					"Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n",
+					i+1,
+					req.URL,
+					resp.Status,
+					string(body),
+				)
 			}
 		}
 	}
