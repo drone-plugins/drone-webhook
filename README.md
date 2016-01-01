@@ -1,5 +1,8 @@
 # drone-webhook
 
+[![Build Status](http://beta.drone.io/api/badges/drone-plugins/drone-webhook/status.svg)](http://beta.drone.io/drone-plugins/drone-webhook)
+[![](https://badge.imagelayers.io/plugins/drone-webhook:latest.svg)](https://imagelayers.io/?images=plugins/drone-webhook:latest 'Get your own badge on imagelayers.io')
+
 Drone plugin for sending notifications via Webhook
 
 ## Usage
