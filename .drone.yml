@@ -2,6 +2,7 @@ build:
   image: golang:1.5
   commands:
     - make deps
+    - make vet
     - make build
     - make test
 

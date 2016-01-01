@@ -18,6 +18,12 @@ deps:
 test:
 	go test -cover ./...
 
+fmt:
+	go fmt ./...
+
+vet:
+	go vet ./...
+
 build:
 	go build -ldflags '-s -w $(LDFLAGS)'
 
