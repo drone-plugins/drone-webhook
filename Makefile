@@ -1,4 +1,4 @@
-.PHONY: clean deps test build
+.PHONY: clean deps test build docker
 
 export GOOS ?= linux
 export GOARCH ?= amd64
@@ -18,5 +18,14 @@ deps:
 test:
 	go test -cover ./...
 
+fmt:
+	go fmt ./...
+
+vet:
+	go vet ./...
+
 build:
 	go build -ldflags '-s -w $(LDFLAGS)'
+
+docker:
+	docker build --rm=true -t plugins/drone-webhook .

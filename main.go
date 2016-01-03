@@ -33,29 +33,29 @@ func main() {
 	plugin.Param("vargs", &vargs)
 	plugin.MustParse()
 
-	if len(vargs.Method) == 0 {
+	if vargs.Method == "" {
 		vargs.Method = "POST"
 	}
 
-	if len(vargs.ContentType) == 0 {
+	if vargs.ContentType == "" {
 		vargs.ContentType = "application/json"
 	}
 
-	data := struct {
-		System drone.System `json:"system"`
-		Repo   drone.Repo   `json:"repo"`
-		Build  drone.Build  `json:"build"`
-	}{system, repo, build}
-
-	// creates the payload. by default the payload
+	// Creates the payload, by default the payload
 	// is the build details in json format, but a custom
 	// template may also be used.
 
 	var buf bytes.Buffer
 
-	if len(vargs.Template) == 0 {
+	if vargs.Template == "" {
+		data := struct {
+			System drone.System `json:"system"`
+			Repo   drone.Repo   `json:"repo"`
+			Build  drone.Build  `json:"build"`
+		}{system, repo, build}
+
 		if err := json.NewEncoder(&buf).Encode(&data); err != nil {
-			fmt.Printf("Error encoding json payload. %s\n", err)
+			fmt.Printf("Error: Failed to encode JSON payload. %s\n", err)
 			os.Exit(1)
 		}
 	} else {
@@ -66,7 +66,7 @@ func main() {
 		})
 
 		if err != nil {
-			fmt.Printf("Error executing content template. %s\n", err)
+			fmt.Printf("Error: Failed to execute the content template. %s\n", err)
 			os.Exit(1)
 		}
 	}
@@ -80,7 +80,7 @@ func main() {
 		uri, err := url.Parse(rawurl)
 
 		if err != nil {
-			fmt.Printf("Error parsing hook url. %s\n", err)
+			fmt.Printf("Error: Failed to parse the hook URL. %s\n", err)
 			os.Exit(1)
 		}
 
@@ -90,7 +90,7 @@ func main() {
 		req, err := http.NewRequest(vargs.Method, uri.String(), r)
 
 		if err != nil {
-			fmt.Printf("Error creating http request. %s\n", err)
+			fmt.Printf("Error: Failed to create the HTTP request. %s\n", err)
 			os.Exit(1)
 		}
 
@@ -100,18 +100,14 @@ func main() {
 			req.Header.Set(key, value)
 		}
 
-		if len(vargs.Auth.Username) > 0 {
-			if len(vargs.Auth.Password) > 0 {
-				req.SetBasicAuth(vargs.Auth.Username, vargs.Auth.Password)
-			} else {
-				req.SetBasicAuth(vargs.Auth.Username, "")
-			}
+		if vargs.Auth.Username != "" {
+			req.SetBasicAuth(vargs.Auth.Username, vargs.Auth.Password)
 		}
 
 		resp, err := http.DefaultClient.Do(req)
 
 		if err != nil {
-			fmt.Printf("Error executing http request. %s\n", err)
+			fmt.Printf("Error: Failed to execute the HTTP request. %s\n", err)
 			os.Exit(1)
 		}
 
@@ -121,15 +117,28 @@ func main() {
 			body, err := ioutil.ReadAll(resp.Body)
 
 			if err != nil {
-				// I do not think we need to os.Exit(1) if we are
-				// unable to read a http response body.
-				fmt.Printf("Error reading http response body. %s\n", err)
+				fmt.Printf("Error: Failed to read the HTTP response body. %s\n", err)
 			}
 
 			if vargs.Debug {
-				fmt.Printf("[debug] Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n", i+1, req.URL, req.Method, req.Header, string(b), resp.Status, string(body))
+				fmt.Printf(
+					"Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n",
+					i+1,
+					req.URL,
+					req.Method,
+					req.Header,
+					string(b),
+					resp.Status,
+					string(body),
+				)
 			} else {
-				fmt.Printf("[info] Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n", i+1, req.URL, resp.Status, string(body))
+				fmt.Printf(
+					"Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n",
+					i+1,
+					req.URL,
+					resp.Status,
+					string(body),
+				)
 			}
 		}
 	}
