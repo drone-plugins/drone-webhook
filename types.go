@@ -1,5 +1,6 @@
 package main
 
+// Params represents the valid paramenter options for the webhook plugin.
 type Params struct {
 	Urls        []string          `json:"urls"`
 	Debug       bool              `json:"debug"`
@@ -10,6 +11,7 @@ type Params struct {
 	ContentType string            `json:"content_type"`
 }
 
+// Auth represents a basic HTTP authentication username and password.
 type Auth struct {
 	Username string `json:"username"`
 	Password string `json:"password"`

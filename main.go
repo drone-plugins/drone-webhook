@@ -14,6 +14,11 @@ import (
 	"github.com/drone/drone-go/template"
 )
 
+const (
+	respFormat      = "Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n"
+	debugRespFormat = "Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n"
+)
+
 var (
 	build     string
 	buildDate string
@@ -122,7 +127,7 @@ func main() {
 
 			if vargs.Debug {
 				fmt.Printf(
-					"Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n",
+					debugRespFormat,
 					i+1,
 					req.URL,
 					req.Method,
@@ -133,7 +138,7 @@ func main() {
 				)
 			} else {
 				fmt.Printf(
-					"Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n",
+					respFormat,
 					i+1,
 					req.URL,
 					resp.Status,
