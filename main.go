@@ -81,7 +81,7 @@ func main() {
 	// and content_type values will be applied to
 	// every webhook request.
 
-	for i, rawurl := range vargs.Urls {
+	for i, rawurl := range vargs.URLs {
 		uri, err := url.Parse(rawurl)
 
 		if err != nil {
