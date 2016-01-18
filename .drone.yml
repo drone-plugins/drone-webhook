@@ -7,13 +7,25 @@ build:
     - make test
 
 publish:
+  coverage:
+    when:
+      branch: master
   docker:
     username: $$DOCKER_USER
     password: $$DOCKER_PASS
     email: $$DOCKER_EMAIL
     repo: plugins/drone-webhook
+    tag: latest
     when:
       branch: master
+  docker:
+    username: $$DOCKER_USER
+    password: $$DOCKER_PASS
+    email: $$DOCKER_EMAIL
+    repo: plugins/drone-webhook
+    tag: develop
+    when:
+      branch: develop
 
 plugin:
   name: Webhook

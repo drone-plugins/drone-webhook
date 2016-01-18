@@ -20,7 +20,6 @@ const (
 )
 
 var (
-	build     string
 	buildDate string
 )
 
