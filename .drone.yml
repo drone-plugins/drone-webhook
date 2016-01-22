@@ -1,5 +1,7 @@
 build:
   image: golang:1.5
+  environment:
+    - CGO_ENABLED=0
   commands:
     - make deps
     - make vet
