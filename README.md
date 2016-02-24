@@ -4,7 +4,7 @@
 [![Coverage Status](https://aircover.co/badges/drone-plugins/drone-webhook/coverage.svg)](https://aircover.co/drone-plugins/drone-webhook)
 [![](https://badge.imagelayers.io/plugins/drone-webhook:latest.svg)](https://imagelayers.io/?images=plugins/drone-webhook:latest 'Get your own badge on imagelayers.io')
 
-Drone plugin to send build status notifications via Webhook
+Drone plugin to send build status notifications via Webhook. For the usage information and a listing of the available options please take a look at [the docs](DOCS.md).
 
 ## Binary
 

@@ -20,11 +20,11 @@ const (
 )
 
 var (
-	buildDate string
+	buildCommit string
 )
 
 func main() {
-	fmt.Printf("Drone Webhook Plugin built at %s\n", buildDate)
+	fmt.Printf("Drone Webhook Plugin built from %s\n", buildCommit)
 
 	system := drone.System{}
 	repo := drone.Repo{}
