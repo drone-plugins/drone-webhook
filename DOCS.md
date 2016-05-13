@@ -1,10 +1,12 @@
 Use the Webhook plugin to notify services via Webhook when a build completes.
-You will need to supply Drone with outgoing Webhook URLs. You can override the
-default configuration with the following parameters:
+You will need to supply Drone with outgoing Webhook URLs.
+
+You can override the default configuration with the following parameters:
 
 * `urls` - JSON payloads are sent to each URL
 * `method` - HTTP request method. Defaults to `POST`
 * `header` - HTTP request header map
+* `skip_verify` - Skip verification of TLS certificates, defaults to `false`
 
 ## Example
 
@@ -23,10 +25,10 @@ notify:
 ### Custom Body
 
 In some cases you may want to submit a custom payload in the body of your hook.
-For the use case we expose the following additional parameters:
+For this usage the following additional parameters should be used:
 
 * `template` - Handlebars template to create a custom payload body. See [docs](http://handlebarsjs.com/)
-* `content_type` - HTTP request content type
+* `content_type` - HTTP request content type, defaults to `application/json`
 
 Example configuration that generate a custom Yaml payload:
 

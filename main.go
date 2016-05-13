@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -108,7 +109,15 @@ func main() {
 			req.SetBasicAuth(vargs.Auth.Username, vargs.Auth.Password)
 		}
 
-		resp, err := http.DefaultClient.Do(req)
+		client := http.DefaultClient
+		if vargs.SkipVerify {
+			client = &http.Client{
+				Transport: &http.Transport{
+					TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+				},
+			}
+		}
+		resp, err := client.Do(req)
 
 		if err != nil {
 			fmt.Printf("Error: Failed to execute the HTTP request. %s\n", err)

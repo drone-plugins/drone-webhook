@@ -3,6 +3,7 @@ package main
 // Params represents the valid paramenter options for the webhook plugin.
 type Params struct {
 	URLs        []string          `json:"urls"`
+	SkipVerify  bool              `json:"skip_verify"`
 	Debug       bool              `json:"debug"`
 	Auth        Auth              `json:"auth"`
 	Headers     map[string]string `json:"header"`
