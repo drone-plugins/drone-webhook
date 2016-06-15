@@ -1,24 +1,19 @@
-workspace:
-  base: /go
-  path: src/github.com/drone-plugins/drone-webhook
-
 pipeline:
-  build:
+  test:
     image: golang:1.6
     environment:
       - CGO_ENABLED=0
+      - GOPATH=/drone
     commands:
-      - make deps
       - make vet
       - make build
       - make test
-
   docker:
-    repo: plugins/drone-webhook
     storage_driver: overlay
-    tag: latest
+    repo: plugins/drone-webhook
+    tag: [ "latest" ]
     when:
-      branch: master
+      branch: release/0.4
       event: push
 
 plugin:
