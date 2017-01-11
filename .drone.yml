@@ -13,7 +13,7 @@ pipeline:
     repo: plugins/drone-webhook
     tag: [ "latest" ]
     when:
-      branch: release/0.4
+      branch: master
       event: push
 
 plugin:
