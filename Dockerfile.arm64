@@ -6,5 +6,5 @@ RUN apk update && \
     ca-certificates && \
   rm -rf /var/cache/apk/*
 
-ADD release/linux/amd64/drone-webhook /bin/
+ADD release/linux/arm64/drone-webhook /bin/
 ENTRYPOINT ["/bin/drone-webhook"]

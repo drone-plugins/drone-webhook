@@ -8,112 +8,30 @@ Drone plugin to send build status notifications via Webhook. For the usage infor
 
 ## Binary
 
-Build the binary using `make`:
+Build the binary using `./.drone.sh`:
+
+### Usage
 
 ```
-make deps build
+  docker run --rm \
+    -e PLUGIN_URLS=https://hooks.somplace.com/endpoing/... \
+    -e PLUGIN_HEADERS="HEADER1=value1" \
+    -e PLUGIN_USERNAME=drone \
+    -e PLUGIN_PASSWORD=password \
+    -e DRONE_REPO_OWNER=octocat \
+    -e DRONE_REPO_NAME=hello-world \
+    -e DRONE_COMMIT_SHA=7fd1a60b01f91b314f59955a4e4d4e80d8edf11d \
+    -e DRONE_COMMIT_BRANCH=master \
+    -e DRONE_COMMIT_AUTHOR=octocat \
+    -e DRONE_BUILD_NUMBER=1 \
+    -e DRONE_BUILD_STATUS=success \
+    -e DRONE_BUILD_LINK=http://github.com/octocat/hello-world \
+    -e DRONE_TAG=1.0.0 \
+    plugins/webhook
 ```
 
-### Example
 
-```sh
-./drone-webhook <<EOF
-{
-    "repo": {
-        "clone_url": "git://github.com/drone/drone",
-        "owner": "drone",
-        "name": "drone",
-        "full_name": "drone/drone"
-    },
-    "system": {
-        "link_url": "https://beta.drone.io"
-    },
-    "build": {
-        "number": 22,
-        "status": "success",
-        "started_at": 1421029603,
-        "finished_at": 1421029813,
-        "message": "Update the Readme",
-        "author": "johnsmith",
-        "author_email": "john.smith@gmail.com"
-        "event": "push",
-        "branch": "master",
-        "commit": "436b7a6e2abaddfd35740527353e78a227ddcb2c",
-        "ref": "refs/heads/master"
-    },
-    "workspace": {
-        "root": "/drone/src",
-        "path": "/drone/src/github.com/drone/drone"
-    },
-    "vargs": {
-        "urls": [
-            "https://your.webhook/..."
-        ],
-        "debug": true,
-        "auth": {
-            "username": "johnsmith",
-            "password": "secretPass"
-        },
-        "method": "POST",
-        "template": "{\"git_branch\": \"{{ .Build.Branch }}\"}",
-        "content_type": "application/json"
-    }
-}
-EOF
-```
 
-## Docker
 
-Build the container using `make`:
 
-```
-make deps docker
-```
 
-### Example
-
-```sh
-docker run -i plugins/drone-webhook <<EOF
-{
-    "repo": {
-        "clone_url": "git://github.com/drone/drone",
-        "owner": "drone",
-        "name": "drone",
-        "full_name": "drone/drone"
-    },
-    "system": {
-        "link_url": "https://beta.drone.io"
-    },
-    "build": {
-        "number": 22,
-        "status": "success",
-        "started_at": 1421029603,
-        "finished_at": 1421029813,
-        "message": "Update the Readme",
-        "author": "johnsmith",
-        "author_email": "john.smith@gmail.com"
-        "event": "push",
-        "branch": "master",
-        "commit": "436b7a6e2abaddfd35740527353e78a227ddcb2c",
-        "ref": "refs/heads/master"
-    },
-    "workspace": {
-        "root": "/drone/src",
-        "path": "/drone/src/github.com/drone/drone"
-    },
-    "vargs": {
-        "urls": [
-            "https://your.webhook/..."
-        ],
-        "debug": true,
-        "auth": {
-            "username": "johnsmith",
-            "password": "secretPass"
-        },
-        "method": "POST",
-        "template": "{\"git_branch\": \"{{ .Build.Branch }}\"}",
-        "content_type": "application/json"
-    }
-}
-EOF
-```

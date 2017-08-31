@@ -22,6 +22,7 @@ _testmain.go
 *.exe
 *.test
 *.prof
-
+.idea/
+release/
 coverage.out
 drone-webhook

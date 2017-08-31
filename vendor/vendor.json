@@ -1,0 +1,37 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "PZ4KJai7DnuJ2YNJ2v2l2BseB1g=",
+			"path": "github.com/aymerick/raymond",
+			"revision": "72acac2207479d21dd45898c2a4264246c818148",
+			"revisionTime": "2016-12-09T22:07:24Z"
+		},
+		{
+			"checksumSHA1": "Rvn+RH9pwFno1w6W+mhWsj/PxlA=",
+			"path": "github.com/aymerick/raymond/ast",
+			"revision": "72acac2207479d21dd45898c2a4264246c818148",
+			"revisionTime": "2016-12-09T22:07:24Z"
+		},
+		{
+			"checksumSHA1": "5SJwPK0MYtJt5YiE1BNc9Wl3+S0=",
+			"path": "github.com/aymerick/raymond/lexer",
+			"revision": "72acac2207479d21dd45898c2a4264246c818148",
+			"revisionTime": "2016-12-09T22:07:24Z"
+		},
+		{
+			"checksumSHA1": "TCu/8QBP8TApLjSt13a7Qjnyxrs=",
+			"path": "github.com/aymerick/raymond/parser",
+			"revision": "72acac2207479d21dd45898c2a4264246c818148",
+			"revisionTime": "2016-12-09T22:07:24Z"
+		},
+		{
+			"checksumSHA1": "9LeR7BH4PSu8LRDZ8bY7QY1HXJE=",
+			"path": "github.com/urfave/cli",
+			"revision": "4b90d79a682b4bf685762c7452db20f2a676ecb2",
+			"revisionTime": "2017-07-06T19:46:25Z"
+		}
+	],
+	"rootPath": "github.com/drone-plugins/drone-webhook"
+}
