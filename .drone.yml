@@ -52,7 +52,7 @@ pipeline:
 
   publish_linux_amd64:
     image: plugins/docker
-    repo: plugins/webook
+    repo: plugins/webhook
     tags: [ latest, 1.0.0, 1.0, 1 ]
     secrets: [ docker_username, docker_password ]
     dockerfile: Dockerfile
