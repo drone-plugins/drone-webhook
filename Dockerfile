@@ -10,7 +10,7 @@ COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 LABEL org.label-schema.version=latest
 LABEL org.label-schema.vcs-url="https://github.com/drone-plugins/drone-webhook.git"
-LABEL org.label-schema.name="Drone S3 Webhook"
+LABEL org.label-schema.name="Drone Webhook"
 LABEL org.label-schema.vendor="Drone.IO Community"
 
 
