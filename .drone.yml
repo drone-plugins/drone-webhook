@@ -40,6 +40,16 @@ pipeline:
     commands:
       - go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm/drone-webhook
 
+  # build_windows_amd64:
+  #   image: golang:1.9-nanoserver
+  #   group: build
+  #   environment:
+  #     - GOOS=windows
+  #     - GOARCH=amd64
+  #     - CGO_ENABLED=0
+  #   commands:
+  #     - go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/windows/amd64/drone-webhook
+
   publish_linux_amd64:
     image: plugins/docker
     repo: plugins/webook
@@ -69,3 +79,13 @@ pipeline:
     when:
       branch: master
       event: push
+
+  # publish_windows_amd64:
+  #   image: plugins/docker
+  #   repo: plugins/webhook
+  #   tags: [ windows-amd64 ]
+  #   secrets: [ docker_username, docker_password ]
+  #   dockerfile: Dockerfile.windows
+  #   when:
+  #     branch: master
+  #     event: push

@@ -10,7 +10,7 @@ Drone plugin to send build status notifications via Webhook. For the usage infor
 
 ## Binary
 
-Build the binary using `./.drone.sh`:
+Build the binary using `drone exec`:
 
 ### Usage
 

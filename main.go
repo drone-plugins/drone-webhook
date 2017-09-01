@@ -16,8 +16,8 @@ var build string
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "rancher publish"
-	app.Usage = "rancher publish"
+	app.Name = "Drone webhook"
+	app.Usage = "Drone webhook"
 	app.Action = run
 	app.Version = fmt.Sprintf("1.0.0+%s", build)
 	app.Flags = []cli.Flag{
