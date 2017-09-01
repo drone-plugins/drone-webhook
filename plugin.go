@@ -12,6 +12,11 @@ import (
 	"strings"
 )
 
+const (
+	respFormat      = "Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n"
+	debugRespFormat = "Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n"
+)
+
 type (
 	Repo struct {
 		Owner string `json:"owner"`
@@ -58,7 +63,6 @@ type (
 )
 
 func (p Plugin) Exec() error {
-
 	var buf bytes.Buffer
 	var b []byte
 

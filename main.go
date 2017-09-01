@@ -7,65 +7,60 @@ import (
 	"os"
 )
 
-const (
-	respFormat      = "Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n"
-	debugRespFormat = "Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n"
-)
-
-var build string
+var build = "0" // build number set at compile-time
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "Drone webhook"
-	app.Usage = "Drone webhook"
+	app.Name = "webhook plugin"
+	app.Usage = "webhook plugin"
 	app.Action = run
 	app.Version = fmt.Sprintf("1.0.0+%s", build)
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:   "method",
-			Usage:  "Webhook method",
+			Usage:  "webhook method",
 			EnvVar: "PLUGIN_METHOD",
 			Value:  "POST",
 		},
 		cli.StringFlag{
 			Name:   "username",
-			Usage:  "Username for basic auth",
+			Usage:  "username for basic auth",
 			EnvVar: "PLUGIN_USERNAME,WEBHOOK_USERNAME",
 		},
 		cli.StringFlag{
 			Name:   "password",
-			Usage:  "Password for basic auth",
+			Usage:  "password for basic auth",
 			EnvVar: "PLUGIN_PASSWORD,WEBHOOK_PASSWORD",
 		},
 		cli.StringFlag{
 			Name:   "content-type",
-			Usage:  "Content type",
+			Usage:  "content type",
 			EnvVar: "PLUGIN_CONTENT_TYPE",
 			Value:  "application/json",
 		},
 		cli.StringFlag{
 			Name:   "template",
-			Usage:  "Custom template for webhook",
+			Usage:  "custom template for webhook",
 			EnvVar: "PLUGIN_TEMPLATE",
 		},
 		cli.StringSliceFlag{
 			Name:   "headers",
-			Usage:  "Custom headers key map",
+			Usage:  "custom headers key map",
 			EnvVar: "PLUGIN_HEADERS",
 		},
 		cli.StringSliceFlag{
 			Name:   "urls",
-			Usage:  "List of urls to perform the action on",
+			Usage:  "list of urls to perform the action on",
 			EnvVar: "PLUGIN_URLS",
 		},
 		cli.BoolFlag{
 			Name:   "debug",
-			Usage:  "For debug information",
+			Usage:  "enable debug information",
 			EnvVar: "PLUGIN_DEBUG",
 		},
 		cli.BoolFlag{
 			Name:   "skip-verify",
-			Usage:  "Skip ssl verification",
+			Usage:  "skip ssl verification",
 			EnvVar: "PLUGIN_SKIP_VERIFY",
 		},
 		cli.StringFlag{
@@ -158,8 +153,6 @@ func main() {
 }
 
 func run(c *cli.Context) error {
-	fmt.Printf("Drone Webhook Plugin built from %s\n", build)
-
 	plugin := Plugin{
 		Repo: Repo{
 			Owner: c.String("repo.owner"),
