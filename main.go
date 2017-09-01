@@ -11,14 +11,14 @@ const (
 	respFormat      = "Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n"
 	debugRespFormat = "Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n"
 )
-var version string
+var build string
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "rancher publish"
 	app.Usage = "rancher publish"
 	app.Action = run
-	app.Version = version
+	app.Version = fmt.Sprintf("1.0.0+%s", build)
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:   "method",
@@ -29,12 +29,12 @@ func main() {
 		cli.StringFlag{
 			Name: "username",
 			Usage: "Username for basic auth",
-			EnvVar: "PLUGIN_USERNAME, WEBHOOK_USERNAME",
+			EnvVar: "PLUGIN_USERNAME,WEBHOOK_USERNAME",
 		},
 		cli.StringFlag{
 			Name: "password",
 			Usage: "Password for basic auth",
-			EnvVar: "PLUGIN_PASSWORD, WEBHOOK_PASSWORD",
+			EnvVar: "PLUGIN_PASSWORD,WEBHOOK_PASSWORD",
 		},
 		cli.StringFlag{
 			Name:   "content-type",
@@ -157,7 +157,7 @@ func main() {
 }
 
 func run(c *cli.Context) error {
-	fmt.Printf("Drone Webhook Plugin built from %s\n", version)
+	fmt.Printf("Drone Webhook Plugin built from %s\n", build)
 
 	plugin := Plugin{
 		Repo: Repo{
