@@ -1,16 +1,17 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"io/ioutil"
 	"bytes"
-	"net/url"
 	"crypto/tls"
-	"net/http"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"os"
 	"strings"
 )
+
 type (
 	Repo struct {
 		Owner string `json:"owner"`
@@ -20,7 +21,7 @@ type (
 	Build struct {
 		Tag     string `json:"tag"`
 		Event   string `json:"event"`
-		Number  int `json:"number"`
+		Number  int    `json:"number"`
 		Commit  string `json:"commit"`
 		Ref     string `json:"ref"`
 		Branch  string `json:"branch"`
@@ -28,20 +29,20 @@ type (
 		Message string `json:"message"`
 		Status  string `json:"status"`
 		Link    string `json:"link"`
-		Started int64 `json:"started"`
-		Created int64 `json:"created"`
+		Started int64  `json:"started"`
+		Created int64  `json:"created"`
 	}
 
 	Config struct {
-		Method string
-		Username string
-		Password string
+		Method      string
+		Username    string
+		Password    string
 		ContentType string
-		Template string
-		Headers []string
-		URLs []string
-		Debug bool
-		SkipVerify bool
+		Template    string
+		Headers     []string
+		URLs        []string
+		Debug       bool
+		SkipVerify  bool
 	}
 
 	Job struct {
@@ -63,7 +64,7 @@ func (p Plugin) Exec() error {
 
 	if p.Config.Template == "" {
 		data := struct {
-		    Repo Repo `json:"repo"`
+			Repo  Repo  `json:"repo"`
 			Build Build `json:"build"`
 		}{p.Repo, p.Build}
 
@@ -73,11 +74,11 @@ func (p Plugin) Exec() error {
 		}
 		b = buf.Bytes()
 	} else {
-			txt, err := RenderTrim(p.Config.Template, p)
-			if err != nil {
-				return err
-			}
-			text := txt
+		txt, err := RenderTrim(p.Config.Template, p)
+		if err != nil {
+			return err
+		}
+		text := txt
 		b = []byte(text)
 
 	}
@@ -163,5 +164,3 @@ func (p Plugin) Exec() error {
 	}
 	return nil
 }
-
-
