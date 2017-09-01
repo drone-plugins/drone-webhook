@@ -104,4 +104,6 @@ pipeline:
     pull: true
     secrets: [ webhook_url ]
     when:
+      branch: master
+      event: push
       status: [ success ]
