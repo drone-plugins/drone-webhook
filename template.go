@@ -84,7 +84,7 @@ func uppercaseFirst(s string) string {
 }
 
 func toDuration(started, finished float64) string {
-	return fmt.Sprintln(time.Duration(finished-started) * time.Second)
+	return fmt.Sprint(time.Duration(finished-started) * time.Second)
 }
 
 func toDatetime(timestamp float64, layout, zone string) string {
@@ -133,5 +133,5 @@ func since(start int64) string {
 	// will give us something like "40m12.917523438s" vs "40m12s". We lose
 	// some precision, but the format is much more readable.
 	now := time.Unix(time.Now().Unix(), 0)
-	return fmt.Sprintln(now.Sub(time.Unix(start, 0)))
+	return fmt.Sprint(now.Sub(time.Unix(start, 0)))
 }
