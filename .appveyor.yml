@@ -1,0 +1,37 @@
+version: '{build}'
+image: 'Visual Studio 2017'
+
+clone_folder: 'c:\go\src\github.com\drone-plugins\drone-webhook'
+
+environment:
+  DOCKER_USERNAME:
+    secure: '4YzzahbEiMZQJpOCOd1LAw=='
+  DOCKER_PASSWORD:
+    secure: 'VqO/G3Zfslu6zSLdwHKO+Q=='
+
+install:
+  - cmd: |
+      docker version
+      go version
+
+build_script:
+  - cmd: |
+      go build -v -ldflags "-X main.build=%APPVEYOR_BUILD_VERSION%"" -a -o drone-webhook.exe
+
+      docker pull microsoft/nanoserver:10.0.14393.1593
+      docker build -f Dockerfile.windows -t plugins/webhook:windows .
+
+test_script:
+  - cmd: |
+      docker run --rm plugins/webhook:windows --version
+
+deploy_script:
+  - ps: |
+      $ErrorActionPreference = 'Stop';
+
+      if ( $env:APPVEYOR_PULL_REQUEST_NUMBER -Or ! $env:APPVEYOR_REPO_BRANCH.Equals("master")) {
+        Write-Host Nothing to deploy.
+      } else {
+        docker login --username $env:DOCKER_USERNAME --password $env:DOCKER_PASSWORD
+        docker push plugins/webhook:windows
+      }
