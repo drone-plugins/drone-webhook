@@ -1,12 +1,13 @@
 # drone-webhook
 
 [![Build Status](http://beta.drone.io/api/badges/drone-plugins/drone-webhook/status.svg)](http://beta.drone.io/drone-plugins/drone-webhook)
-[![Join the chat at https://gitter.im/drone/drone](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/drone/drone)
+[![Join the discussion at https://discourse.drone.io](https://img.shields.io/badge/discourse-forum-orange.svg)](https://discourse.drone.io)
+[![Drone questions at https://stackoverflow.com](https://img.shields.io/badge/drone-stackoverflow-orange.svg)](https://stackoverflow.com/questions/tagged/drone.io)
 [![Go Doc](https://godoc.org/github.com/drone-plugins/drone-webhook?status.svg)](http://godoc.org/github.com/drone-plugins/drone-webhook)
 [![Go Report](https://goreportcard.com/badge/github.com/drone-plugins/drone-webhook)](https://goreportcard.com/report/github.com/drone-plugins/drone-webhook)
 [![](https://images.microbadger.com/badges/image/plugins/webhook.svg)](https://microbadger.com/images/plugins/webhook "Get your own image badge on microbadger.com")
 
-Drone plugin to send build status notifications via Webhook. For the usage information and a listing of the available options please take a look at [the docs](DOCS.md).
+Drone plugin to send build status notifications via Webhook. For the usage information and a listing of the available options please take a look at [the docs](http://plugins.drone.io/drone-plugins/drone-webhook/).
 
 ## Build
 
@@ -42,5 +43,7 @@ docker run --rm \
   -e DRONE_BUILD_STATUS=success \
   -e DRONE_BUILD_LINK=http://github.com/octocat/hello-world \
   -e DRONE_TAG=1.0.0 \
+  -v $(pwd):$(pwd) \
+  -w $(pwd) \
   plugins/webhook
 ```
