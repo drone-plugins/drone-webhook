@@ -2,19 +2,23 @@ package main
 
 import (
 	"fmt"
-	"github.com/urfave/cli"
 	"log"
 	"os"
+
+	"github.com/urfave/cli"
 )
 
-var build = "0" // build number set at compile-time
+var (
+	version = "0.0.0"
+	build   = "0"
+)
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "webhook plugin"
 	app.Usage = "webhook plugin"
 	app.Action = run
-	app.Version = fmt.Sprintf("1.0.0+%s", build)
+	app.Version = fmt.Sprintf("%s+%s", version, build)
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:   "method",
@@ -51,7 +55,7 @@ func main() {
 		cli.StringSliceFlag{
 			Name:   "urls",
 			Usage:  "list of urls to perform the action on",
-			EnvVar: "PLUGIN_URLS",
+			EnvVar: "PLUGIN_URLS,WEBHOOK_URLS",
 		},
 		cli.BoolFlag{
 			Name:   "debug",

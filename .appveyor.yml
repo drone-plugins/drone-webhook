@@ -1,7 +1,9 @@
 version: '{build}'
 image: 'Visual Studio 2017'
+platform: x64
 
 clone_folder: 'c:\go\src\github.com\drone-plugins\drone-webhook'
+max_jobs: 1
 
 environment:
   DOCKER_USERNAME:
@@ -10,28 +12,51 @@ environment:
     secure: 'VqO/G3Zfslu6zSLdwHKO+Q=='
 
 install:
-  - cmd: |
+  - ps: |
       docker version
       go version
 
 build_script:
-  - cmd: |
-      go build -v -ldflags "-X main.build=%APPVEYOR_BUILD_VERSION%"" -a -o drone-webhook.exe
+  - ps: |
+      if ( $env:APPVEYOR_REPO_TAG -eq 'false' ) {
+        go build -ldflags "-X main.build=$env:APPVEYOR_BUILD_VERSION" -a -o drone-webhook.exe
+      } else {
+        $version = $env:APPVEYOR_REPO_TAG_NAME.substring(1)
+        go build -ldflags "-X main.version=$version -X main.build=$env:APPVEYOR_BUILD_VERSION" -a -o drone-webhook.exe
+      }
 
       docker pull microsoft/nanoserver:10.0.14393.1593
-      docker build -f Dockerfile.windows -t plugins/webhook:windows .
+      docker build -f Dockerfile.windows -t plugins/webhook:windows-amd64 .
 
 test_script:
-  - cmd: |
-      docker run --rm plugins/webhook:windows --version
+  - ps: |
+      docker run --rm plugins/webhook:windows-amd64 --version
 
 deploy_script:
   - ps: |
       $ErrorActionPreference = 'Stop';
 
-      if ( $env:APPVEYOR_PULL_REQUEST_NUMBER -Or ! $env:APPVEYOR_REPO_BRANCH.Equals("master")) {
+      if ( $env:APPVEYOR_PULL_REQUEST_NUMBER ) {
         Write-Host Nothing to deploy.
       } else {
         docker login --username $env:DOCKER_USERNAME --password $env:DOCKER_PASSWORD
-        docker push plugins/webhook:windows
+
+        if ( $env:APPVEYOR_REPO_TAG -eq 'true' ) {
+          $major,$minor,$patch = $env:APPVEYOR_REPO_TAG_NAME.substring(1).split('.')
+
+          docker push plugins/webhook:windows-amd64
+
+          docker tag plugins/webhook:windows-amd64 plugins/webhook:$major.$minor.$patch-windows-amd64
+          docker push plugins/webhook:$major.$minor.$patch-windows-amd64
+
+          docker tag plugins/webhook:windows-amd64 plugins/webhook:$major.$minor-windows-amd64
+          docker push plugins/webhook:$major.$minor-windows-amd64
+
+          docker tag plugins/webhook:windows-amd64 plugins/webhook:$major-windows-amd64
+          docker push plugins/webhook:$major-windows-amd64
+        } else {
+          if ( $env:APPVEYOR_REPO_BRANCH -eq 'master' ) {
+            docker push plugins/webhook:windows-amd64
+          }
+        }
       }

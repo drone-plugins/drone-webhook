@@ -8,7 +8,10 @@ pipeline:
     pull: true
     commands:
       - go vet
-      - go test -cover -coverprofile=coverage.out
+      - |
+        for PKG in $(go list ./... | grep -v /vendor/); do
+          go test -cover -coverprofile $GOPATH/src/$PKG/coverage.out $PKG
+        done
 
   build_linux_amd64:
     image: golang:1.9
@@ -19,7 +22,28 @@ pipeline:
       - GOARCH=amd64
       - CGO_ENABLED=0
     commands:
-      - go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/amd64/drone-webhook
+      - |
+        if test "${DRONE_TAG}" = ""; then
+          go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/amd64/drone-webhook
+        else
+          go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/amd64/drone-webhook
+        fi
+
+  build_linux_i386:
+    image: golang:1.9
+    pull: true
+    group: build
+    environment:
+      - GOOS=linux
+      - GOARCH=386
+      - CGO_ENABLED=0
+    commands:
+      - |
+        if test "${DRONE_TAG}" = ""; then
+          go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/i386/drone-webhook
+        else
+          go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/i386/drone-webhook
+        fi
 
   build_linux_arm64:
     image: golang:1.9
@@ -30,7 +54,12 @@ pipeline:
       - GOARCH=arm64
       - CGO_ENABLED=0
     commands:
-      - go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm64/drone-webhook
+      - |
+        if test "${DRONE_TAG}" = ""; then
+          go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm64/drone-webhook
+        else
+          go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm64/drone-webhook
+        fi
 
   build_linux_arm:
     image: golang:1.9
@@ -42,68 +71,74 @@ pipeline:
       - CGO_ENABLED=0
       - GOARM=7
     commands:
-      - go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm/drone-webhook
-
-  # build_windows_amd64:
-  #   image: golang:1.9-nanoserver
-  #   pull: true
-  #   group: build
-  #   environment:
-  #     - GOOS=windows
-  #     - GOARCH=amd64
-  #     - CGO_ENABLED=0
-  #   commands:
-  #     - go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/windows/amd64/drone-webhook
+      - |
+        if test "${DRONE_TAG}" = ""; then
+          go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm/drone-webhook
+        else
+          go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm/drone-webhook
+        fi
 
   publish_linux_amd64:
     image: plugins/docker:17.05
     pull: true
-    repo: plugins/webhook
-    tags: [ latest, 1.0.0, 1.0, 1 ]
     secrets: [ docker_username, docker_password ]
+    group: docker
+    repo: plugins/webhook
+    auto_tag: true
+    auto_tag_suffix: linux-amd64
     dockerfile: Dockerfile
     when:
-      branch: master
-      event: push
+      event: [ push, tag ]
+
+  publish_linux_i386:
+    image: plugins/docker:17.05
+    pull: true
+    secrets: [ docker_username, docker_password ]
+    group: docker
+    repo: plugins/webhook
+    auto_tag: true
+    auto_tag_suffix: linux-i386
+    dockerfile: Dockerfile.i386
+    when:
+      event: [ push, tag ]
 
   publish_linux_arm64:
     image: plugins/docker:17.05
     pull: true
-    repo: plugins/webhook
-    tags: [ linux-arm64 ]
     secrets: [ docker_username, docker_password ]
+    group: docker
+    repo: plugins/webhook
+    auto_tag: true
+    auto_tag_suffix: linux-arm64
     dockerfile: Dockerfile.arm64
     when:
-      branch: master
-      event: push
+      event: [ push, tag ]
 
   publish_linux_arm:
     image: plugins/docker:17.05
     pull: true
-    repo: plugins/webhook
-    tags: [ linux-arm ]
     secrets: [ docker_username, docker_password ]
+    group: docker
+    repo: plugins/webhook
+    auto_tag: true
+    auto_tag_suffix: linux-arm
     dockerfile: Dockerfile.arm
     when:
-      branch: master
-      event: push
+      event: [ push, tag ]
 
-  # publish_windows_amd64:
-  #   image: plugins/docker:17.05
-  #   pull: true
-  #   repo: plugins/webhook
-  #   tags: [ windows-amd64 ]
-  #   secrets: [ docker_username, docker_password ]
-  #   dockerfile: Dockerfile.windows
-  #   when:
-  #     branch: master
-  #     event: push
+  manifests:
+    image: plugins/manifest:1
+    pull: true
+    secrets: [ docker_username, docker_password ]
+    spec: manifest.tmpl
+    auto_tag: true
+    ignore_missing: true
+    when:
+      event: [ push, tag ]
 
   microbadger:
     image: plugins/webhook:1
     pull: true
     secrets: [ webhook_url ]
     when:
-      branch: master
-      event: push
       status: [ success ]
