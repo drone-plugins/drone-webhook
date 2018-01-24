@@ -44,15 +44,15 @@ deploy_script:
         if ( $env:APPVEYOR_REPO_TAG -eq 'true' ) {
           $major,$minor,$patch = $env:APPVEYOR_REPO_TAG_NAME.substring(1).split('.')
 
-          docker push plugins/webhook:windows
+          docker push plugins/webhook:windows-amd64
 
-          docker tag plugins/webhook:windows plugins/webhook:$major.$minor.$patch-windows
+          docker tag plugins/webhook:windows-amd64 plugins/webhook:$major.$minor.$patch-windows-amd64
           docker push plugins/webhook:$major.$minor.$patch-windows-amd64
 
-          docker tag plugins/webhook:windows plugins/webhook:$major.$minor-windows
+          docker tag plugins/webhook:windows-amd64 plugins/webhook:$major.$minor-windows-amd64
           docker push plugins/webhook:$major.$minor-windows-amd64
 
-          docker tag plugins/webhook:windows plugins/webhook:$major-windows
+          docker tag plugins/webhook:windows-amd64 plugins/webhook:$major-windows-amd64
           docker push plugins/webhook:$major-windows-amd64
         } else {
           if ( $env:APPVEYOR_REPO_BRANCH -eq 'master' ) {
