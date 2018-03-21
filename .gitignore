@@ -24,5 +24,7 @@ _testmain.go
 *.prof
 
 release/
+vendor/
+
 coverage.out
 drone-webhook

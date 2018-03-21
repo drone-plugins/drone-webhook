@@ -1,11 +1,12 @@
 version: '{build}'
 image: 'Visual Studio 2017'
-platform: x64
+platform: 'x64'
 
-clone_folder: 'c:\go\src\github.com\drone-plugins\drone-webhook'
+clone_folder: 'c:\gopath\src\github.com\drone-plugins\drone-webhook'
 max_jobs: 1
 
 environment:
+  GOPATH: c:\gopath
   DOCKER_USERNAME:
     secure: '4YzzahbEiMZQJpOCOd1LAw=='
   DOCKER_PASSWORD:
@@ -15,14 +16,19 @@ install:
   - ps: |
       docker version
       go version
+  - ps: |
+      $env:Path = "c:\gopath\bin;$env:Path"
 
 build_script:
   - ps: |
+      go get -u github.com/golang/dep/cmd/dep
+      dep ensure
+
       if ( $env:APPVEYOR_REPO_TAG -eq 'false' ) {
-        go build -ldflags "-X main.build=$env:APPVEYOR_BUILD_VERSION" -a -o drone-webhook.exe
+        go build -ldflags "-X main.build=$env:APPVEYOR_BUILD_VERSION" -a -o release/drone-webhook.exe
       } else {
         $version = $env:APPVEYOR_REPO_TAG_NAME.substring(1)
-        go build -ldflags "-X main.version=$version -X main.build=$env:APPVEYOR_BUILD_VERSION" -a -o drone-webhook.exe
+        go build -ldflags "-X main.version=$version -X main.build=$env:APPVEYOR_BUILD_VERSION" -a -o release/drone-webhook.exe
       }
 
       docker pull microsoft/nanoserver:10.0.14393.1593
