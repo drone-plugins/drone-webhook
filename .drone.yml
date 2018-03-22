@@ -3,18 +3,22 @@ workspace:
   path: src/github.com/drone-plugins/drone-webhook
 
 pipeline:
-  test:
-    image: golang:1.9
+  deps:
+    image: golang:1.10
     pull: true
     commands:
-      - go vet
-      - |
-        for PKG in $(go list ./... | grep -v /vendor/); do
-          go test -cover -coverprofile $GOPATH/src/$PKG/coverage.out $PKG
-        done
+      - go get -u github.com/golang/dep/cmd/dep
+      - dep ensure
+
+  test:
+    image: golang:1.10
+    pull: true
+    commands:
+      - go vet ./...
+      - go test -cover ./...
 
   build_linux_amd64:
-    image: golang:1.9
+    image: golang:1.10
     pull: true
     group: build
     environment:
@@ -30,7 +34,7 @@ pipeline:
         fi
 
   build_linux_i386:
-    image: golang:1.9
+    image: golang:1.10
     pull: true
     group: build
     environment:
@@ -46,7 +50,7 @@ pipeline:
         fi
 
   build_linux_arm64:
-    image: golang:1.9
+    image: golang:1.10
     pull: true
     group: build
     environment:
@@ -62,7 +66,7 @@ pipeline:
         fi
 
   build_linux_arm:
-    image: golang:1.9
+    image: golang:1.10
     pull: true
     group: build
     environment:
@@ -79,7 +83,7 @@ pipeline:
         fi
 
   publish_linux_amd64:
-    image: plugins/docker:17.05
+    image: plugins/docker:17.12
     pull: true
     secrets: [ docker_username, docker_password ]
     group: docker
@@ -91,7 +95,7 @@ pipeline:
       event: [ push, tag ]
 
   publish_linux_i386:
-    image: plugins/docker:17.05
+    image: plugins/docker:17.12
     pull: true
     secrets: [ docker_username, docker_password ]
     group: docker
@@ -103,7 +107,7 @@ pipeline:
       event: [ push, tag ]
 
   publish_linux_arm64:
-    image: plugins/docker:17.05
+    image: plugins/docker:17.12
     pull: true
     secrets: [ docker_username, docker_password ]
     group: docker
@@ -115,7 +119,7 @@ pipeline:
       event: [ push, tag ]
 
   publish_linux_arm:
-    image: plugins/docker:17.05
+    image: plugins/docker:17.12
     pull: true
     secrets: [ docker_username, docker_password ]
     group: docker
