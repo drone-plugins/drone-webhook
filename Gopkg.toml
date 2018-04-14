@@ -1,6 +1,6 @@
 [[constraint]]
-  name = "github.com/aymerick/raymond"
-  version = "2.0.1"
+  branch = "master"
+  name = "github.com/drone/drone-template-lib"
 
 [[constraint]]
   name = "github.com/urfave/cli"

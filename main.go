@@ -151,6 +151,7 @@ func main() {
 			Usage: "source env file",
 		},
 	}
+
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
@@ -191,5 +192,6 @@ func run(c *cli.Context) error {
 			SkipVerify:  c.Bool("skip-verify"),
 		},
 	}
+
 	return plugin.Exec()
 }

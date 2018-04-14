@@ -10,11 +10,8 @@ import (
 	"net/url"
 	"os"
 	"strings"
-)
 
-const (
-	respFormat      = "Webhook %d\n  URL: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n"
-	debugRespFormat = "Webhook %d\n  URL: %s\n  METHOD: %s\n  HEADERS: %s\n  REQUEST BODY: %s\n  RESPONSE STATUS: %s\n  RESPONSE BODY: %s\n"
+	"github.com/drone/drone-template-lib/template"
 )
 
 type (
@@ -63,8 +60,10 @@ type (
 )
 
 func (p Plugin) Exec() error {
-	var buf bytes.Buffer
-	var b []byte
+	var (
+		buf bytes.Buffer
+		b   []byte
+	)
 
 	if p.Config.Template == "" {
 		data := struct {
@@ -76,15 +75,17 @@ func (p Plugin) Exec() error {
 			fmt.Printf("Error: Failed to encode JSON payload. %s\n", err)
 			return err
 		}
+
 		b = buf.Bytes()
 	} else {
-		txt, err := RenderTrim(p.Config.Template, p)
+		txt, err := template.RenderTrim(p.Config.Template, p)
+
 		if err != nil {
 			return err
 		}
+
 		text := txt
 		b = []byte(text)
-
 	}
 
 	// build and execute a request for each url.
@@ -101,7 +102,6 @@ func (p Plugin) Exec() error {
 		}
 
 		r := bytes.NewReader(b)
-
 		req, err := http.NewRequest(p.Config.Method, uri.String(), r)
 
 		if err != nil {
@@ -121,13 +121,17 @@ func (p Plugin) Exec() error {
 		}
 
 		client := http.DefaultClient
+
 		if p.Config.SkipVerify {
 			client = &http.Client{
 				Transport: &http.Transport{
-					TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+					TLSClientConfig: &tls.Config{
+						InsecureSkipVerify: true,
+					},
 				},
 			}
 		}
+
 		resp, err := client.Do(req)
 
 		if err != nil {
@@ -146,7 +150,7 @@ func (p Plugin) Exec() error {
 
 			if p.Config.Debug {
 				fmt.Printf(
-					debugRespFormat,
+					debugFormat,
 					i+1,
 					req.URL,
 					req.Method,
@@ -166,5 +170,6 @@ func (p Plugin) Exec() error {
 			}
 		}
 	}
+
 	return nil
 }

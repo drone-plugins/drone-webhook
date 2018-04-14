@@ -9,8 +9,20 @@
     "lexer",
     "parser"
   ]
-  revision = "a2232af10b53ef1ae5a767f5178db3a6c1dab655"
-  version = "v2.0.1"
+  revision = "2eebd0f5dd9564c0c6e439df11d8a3c7b9b9ab11"
+  version = "v2.0.2"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/drone/drone-template-lib"
+  packages = ["template"]
+  revision = "5748d3149f4859c6d6cf43edb4fa35bba379c918"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/urfave/cli"
@@ -21,6 +33,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f0f9f5cbe5ccddecfff2301c3783e001bde86bec1082c3026fda1ec005c18af5"
+  inputs-digest = "2f1e60cee9e7125c15754093974fd20cd1b6e9ac4d8b6a33a0364477f96461f7"
   solver-name = "gps-cdcl"
   solver-version = 1
