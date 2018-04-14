@@ -48,7 +48,7 @@ type (
 	}
 
 	Job struct {
-		Started int64 `json:"started"`
+		Started int64
 	}
 
 	Plugin struct {
