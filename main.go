@@ -146,10 +146,6 @@ func main() {
 			Usage:  "job started",
 			EnvVar: "DRONE_JOB_STARTED",
 		},
-		cli.StringFlag{
-			Name:  "env-file",
-			Usage: "source env file",
-		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
