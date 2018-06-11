@@ -163,7 +163,7 @@ func (p Plugin) Exec() error {
 				fmt.Printf(
 					respFormat,
 					i+1,
-					req.URL,
+					req.URL.Host,
 					resp.Status,
 					string(body),
 				)
