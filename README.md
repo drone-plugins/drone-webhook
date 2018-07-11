@@ -47,3 +47,24 @@ docker run --rm \
   -w $(pwd) \
   plugins/webhook
 ```
+
+### Arguments for Template
+
+| template args | description |
+| ------------- | ----------- |
+| `repo.owner` | user or org who owns the repo |
+| `repo.name` | repository name |
+| `build.tag` |  |
+| `build.number` | drone ci build number |
+| `build.event` |  |
+| `build.status` | success, failure |
+| `build.commit` | SHA of the commit, like `611b9b861eee36917cff3c8bd4e1835a86d21d30` |
+| `build.ref` |  |
+| `build.branch` |  |
+| `build.author` |  |
+| `build.message` | commit message |
+| `build.link` | link to the page of build in drone ci |
+| `build.started` |  |
+| `build.created` |  |
+
+For more available args, see the [render struct](https://github.com/drone-plugins/drone-webhook/blob/master/main.go#L158)
