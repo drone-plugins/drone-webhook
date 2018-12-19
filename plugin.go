@@ -171,23 +171,21 @@ func (p Plugin) Exec() error {
 			}
 		}
 
-		// Function checks if int is in slice of ints
-		f := func(s []int, e int) bool {
-			for _, a := range s {
-				if a == e {
-					return true
-				}
-			}
-			return false
-		}
-
-		if len(p.Config.ValidCodes) > 0 && !f(p.Config.ValidCodes, resp.StatusCode) {
-			err := fmt.Errorf("Response code %d not found among valid response codes", resp.StatusCode)
-			fmt.Printf("Error: %s\n", err)
-			return err
+		if len(p.Config.ValidCodes) > 0 && !intInSlice(p.Config.ValidCodes, resp.StatusCode) {
+			return fmt.Errorf("Error: Response code %d not found among valid response codes", resp.StatusCode)
 		}
 
 	}
 
 	return nil
+}
+
+// Function checks if int is in slice of ints
+func intInSlice(s []int, e int) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
