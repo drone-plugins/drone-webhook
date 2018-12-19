@@ -34,7 +34,7 @@ docker run --rm \
   -e PLUGIN_HEADERS="HEADER1=value1" \
   -e PLUGIN_USERNAME=drone \
   -e PLUGIN_PASSWORD=password \
-  -e PLUGIN_VALID_RESPONSE_CODES="200 201 202 404" \
+  -e PLUGIN_VALID_RESPONSE_CODES="200,202,404" \
   -e DRONE_REPO_OWNER=octocat \
   -e DRONE_REPO_NAME=hello-world \
   -e DRONE_COMMIT_SHA=7fd1a60b01f91b314f59955a4e4d4e80d8edf11d \
