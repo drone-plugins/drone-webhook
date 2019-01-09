@@ -57,6 +57,11 @@ func main() {
 			Usage:  "list of urls to perform the action on",
 			EnvVar: "PLUGIN_URLS,WEBHOOK_URLS",
 		},
+		cli.IntSliceFlag{
+			Name:   "valid-response-codes",
+			Usage:  "list of valid http response codes",
+			EnvVar: "PLUGIN_VALID_RESPONSE_CODES",
+		},
 		cli.BoolFlag{
 			Name:   "debug",
 			Usage:  "enable debug information",
@@ -184,6 +189,7 @@ func run(c *cli.Context) error {
 			Template:    c.String("template"),
 			Headers:     c.StringSlice("headers"),
 			URLs:        c.StringSlice("urls"),
+			ValidCodes:  c.IntSlice("valid-response-codes"),
 			Debug:       c.Bool("debug"),
 			SkipVerify:  c.Bool("skip-verify"),
 		},

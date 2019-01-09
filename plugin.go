@@ -43,6 +43,7 @@ type (
 		Template    string
 		Headers     []string
 		URLs        []string
+		ValidCodes  []int
 		Debug       bool
 		SkipVerify  bool
 	}
@@ -169,7 +170,22 @@ func (p Plugin) Exec() error {
 				)
 			}
 		}
+
+		if len(p.Config.ValidCodes) > 0 && !intInSlice(p.Config.ValidCodes, resp.StatusCode) {
+			return fmt.Errorf("Error: Response code %d not found among valid response codes", resp.StatusCode)
+		}
+
 	}
 
 	return nil
+}
+
+// Function checks if int is in slice of ints
+func intInSlice(s []int, e int) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
