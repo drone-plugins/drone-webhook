@@ -163,7 +163,7 @@ local golang_image(os, version) =
       steps: [
         {
           name: 'manifest',
-          image: 'plugins/manifest:1',
+          image: 'plugins/manifest',
           pull: 'always',
           settings: {
             username: { from_secret: 'docker_username' },
@@ -174,7 +174,7 @@ local golang_image(os, version) =
         },
         {
           name: 'microbadger',
-          image: 'plugins/webhook:1',
+          image: 'plugins/webhook',
           pull: 'always',
           settings: {
             url: { from_secret: 'microbadger_url' },
