@@ -73,7 +73,9 @@ local golang_image(os, version) =
             'go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/' + os + '/' + arch + '/' + name + extension,
           ],
           when: {
-            event: ['push', 'pull_request'],
+            event: {
+              exclude: ['tag'],
+            },
           },
         },
         {
@@ -132,14 +134,20 @@ local golang_image(os, version) =
           },
           volumes: if std.length(volumes) > 0 then volumes,
           when: {
-            event: ['push'],
+            event: {
+              exclude: ['pull_request'],
+            },
           },
         },
       ],
       trigger: {
-        branch: ['master'],
+        ref: [
+          'refs/heads/master',
+          'refs/pulls/**',
+          'refs/tags/**',
+        ],
       },
-      depends_on: [ test_pipeline_name ],
+      depends_on: [test_pipeline_name],
       volumes: if is_windows then [{ name: windows_pipe_volume, host: { path: windows_pipe } }],
     },
 
@@ -163,9 +171,6 @@ local golang_image(os, version) =
             spec: 'docker/manifest.tmpl',
             ignore_missing: true,
           },
-          when: {
-            event: ['push'],
-          },
         },
         {
           name: 'microbadger',
@@ -174,14 +179,14 @@ local golang_image(os, version) =
           settings: {
             url: { from_secret: 'microbadger_url' },
           },
-          when: {
-            event: ['push'],
-          },
         },
       ],
       depends_on: depends_on,
       trigger: {
-        branch: ['master'],
+        ref: [
+          'refs/heads/master',
+          'refs/tags/**',
+        ],
       },
     },
 }
