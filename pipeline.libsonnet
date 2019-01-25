@@ -50,7 +50,7 @@ local golang_image(os, version) =
     local file_suffix = std.strReplace(tag, '-', '.');
     local volumes = if is_windows then [{ name: windows_pipe_volume, path: windows_pipe }] else [];
     local golang = golang_image(os, version);
-    local plugin_repo = 'plugins/' + std.split(name, '-')[1];
+    local plugin_repo = 'plugins/' + std.splitLimit(name, '-', 1)[1];
     local extension = if is_windows then '.exe' else '';
     {
       kind: 'pipeline',
