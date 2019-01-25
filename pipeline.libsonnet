@@ -11,7 +11,7 @@ local golang_image(os, version) =
   test(os='linux', arch='amd64', version='')::
     local is_windows = windows(os);
     local golang = golang_image(os, version);
-    local volumes = if !is_windows then [{name: 'gopath', path: '/go',}];
+    local volumes = if !is_windows then [{name: 'gopath', path: '/go',}] else [];
     {
       kind: 'pipeline',
       name: test_pipeline_name,
