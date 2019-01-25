@@ -44,8 +44,8 @@ steps:
     GO111MODULE: on
   when:
     event:
-    - push
-    - pull_request
+      exclude:
+      - tag
 
 - name: build-tag
   pull: always
@@ -103,7 +103,8 @@ steps:
     path: \\\\.\\pipe\\docker_engine
   when:
     event:
-    - push
+      exclude:
+      - pull_request
 
 volumes:
 - name: docker_pipe
@@ -111,8 +112,10 @@ volumes:
     path: \\\\.\\pipe\\docker_engine
 
 trigger:
-  branch:
-  - master
+  ref:
+  - refs/heads/master
+  - "refs/pulls/**"
+  - "refs/tags/**"
 
 depends_on:
 - testing
@@ -137,8 +140,8 @@ steps:
     GO111MODULE: on
   when:
     event:
-    - push
-    - pull_request
+      exclude:
+      - tag
 
 - name: build-tag
   pull: always
@@ -196,7 +199,8 @@ steps:
     path: \\\\.\\pipe\\docker_engine
   when:
     event:
-    - push
+      exclude:
+      - pull_request
 
 volumes:
 - name: docker_pipe
@@ -204,8 +208,10 @@ volumes:
     path: \\\\.\\pipe\\docker_engine
 
 trigger:
-  branch:
-  - master
+  ref:
+  - refs/heads/master
+  - "refs/pulls/**"
+  - "refs/tags/**"
 
 depends_on:
 - testing
@@ -222,7 +228,7 @@ platform:
 steps:
 - name: manifest
   pull: always
-  image: plugins/manifest:1
+  image: plugins/manifest
   settings:
     ignore_missing: true
     password:
@@ -230,23 +236,18 @@ steps:
     spec: docker/manifest.tmpl
     username:
       from_secret: docker_username
-  when:
-    event:
-    - push
 
 - name: microbadger
   pull: always
-  image: plugins/webhook:1
+  image: plugins/webhook
   settings:
     url:
       from_secret: microbadger_url
-  when:
-    event:
-    - push
 
 trigger:
-  branch:
-  - master
+  ref:
+  - refs/heads/master
+  - "refs/tags/**"
 
 depends_on:
 - windows-1803
