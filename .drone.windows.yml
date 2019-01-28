@@ -15,6 +15,9 @@ steps:
   - go vet ./...
   environment:
     GO111MODULE: on
+  volumes:
+  - name: gopath
+    path: C:\\gopath
 
 - name: test
   pull: always
@@ -23,6 +26,13 @@ steps:
   - go test -cover ./...
   environment:
     GO111MODULE: on
+  volumes:
+  - name: gopath
+    path: C:\\gopath
+
+volumes:
+- name: gopath
+  temp: {}
 
 ---
 kind: pipeline
