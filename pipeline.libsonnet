@@ -46,6 +46,13 @@ local golang_image(os, version) =
           volumes: volumes,
         },
       ],
+      trigger: {
+        ref: [
+          'refs/heads/master',
+          'refs/tags/**',
+          'refs/pull/**',
+        ],
+      },
       volumes: [{name: 'gopath', temp: {}}]
     },
 
@@ -75,7 +82,7 @@ local golang_image(os, version) =
             GO111MODULE: 'on',
           },
           commands: [
-            'go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/' + os + '/' + arch + '/' + name + extension,
+            'go build -v -ldflags "-X main.version=${DRONE_COMMIT_SHA:0:8}" -a -tags netgo -o release/' + os + '/' + arch + '/' + name + extension,
           ],
           when: {
             event: {
@@ -92,7 +99,7 @@ local golang_image(os, version) =
             GO111MODULE: 'on',
           },
           commands: [
-            'go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/' + os + '/' + arch + '/' + name + extension,
+            'go build -v -ldflags "-X main.version=${DRONE_TAG##v}" -a -tags netgo -o release/' + os + '/' + arch + '/' + name + extension,
           ],
           when: {
             event: ['tag'],
@@ -148,8 +155,8 @@ local golang_image(os, version) =
       trigger: {
         ref: [
           'refs/heads/master',
-          'refs/pulls/**',
           'refs/tags/**',
+          'refs/pull/**',
         ],
       },
       depends_on: [test_pipeline_name],
@@ -186,12 +193,12 @@ local golang_image(os, version) =
           },
         },
       ],
-      depends_on: depends_on,
       trigger: {
         ref: [
           'refs/heads/master',
           'refs/tags/**',
         ],
       },
+      depends_on: depends_on,
     },
 }

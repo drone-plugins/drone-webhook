@@ -33,6 +33,12 @@ volumes:
 - name: gopath
   temp: {}
 
+trigger:
+  ref:
+  - refs/heads/master
+  - "refs/tags/**"
+  - "refs/pull/**"
+
 ---
 kind: pipeline
 name: linux-amd64
@@ -46,7 +52,7 @@ steps:
   pull: always
   image: golang:1.11
   commands:
-  - "go build -v -ldflags \"-X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/linux/amd64/drone-webhook"
+  - "go build -v -ldflags \"-X main.version=${DRONE_COMMIT_SHA:0:8}\" -a -tags netgo -o release/linux/amd64/drone-webhook"
   environment:
     CGO_ENABLED: 0
     GO111MODULE: on
@@ -59,7 +65,7 @@ steps:
   pull: always
   image: golang:1.11
   commands:
-  - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/linux/amd64/drone-webhook"
+  - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v}\" -a -tags netgo -o release/linux/amd64/drone-webhook"
   environment:
     CGO_ENABLED: 0
     GO111MODULE: on
@@ -111,8 +117,8 @@ steps:
 trigger:
   ref:
   - refs/heads/master
-  - "refs/pulls/**"
   - "refs/tags/**"
+  - "refs/pull/**"
 
 depends_on:
 - testing
@@ -130,7 +136,7 @@ steps:
   pull: always
   image: golang:1.11
   commands:
-  - "go build -v -ldflags \"-X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/linux/arm64/drone-webhook"
+  - "go build -v -ldflags \"-X main.version=${DRONE_COMMIT_SHA:0:8}\" -a -tags netgo -o release/linux/arm64/drone-webhook"
   environment:
     CGO_ENABLED: 0
     GO111MODULE: on
@@ -143,7 +149,7 @@ steps:
   pull: always
   image: golang:1.11
   commands:
-  - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/linux/arm64/drone-webhook"
+  - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v}\" -a -tags netgo -o release/linux/arm64/drone-webhook"
   environment:
     CGO_ENABLED: 0
     GO111MODULE: on
@@ -195,8 +201,8 @@ steps:
 trigger:
   ref:
   - refs/heads/master
-  - "refs/pulls/**"
   - "refs/tags/**"
+  - "refs/pull/**"
 
 depends_on:
 - testing
@@ -214,7 +220,7 @@ steps:
   pull: always
   image: golang:1.11
   commands:
-  - "go build -v -ldflags \"-X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/linux/arm/drone-webhook"
+  - "go build -v -ldflags \"-X main.version=${DRONE_COMMIT_SHA:0:8}\" -a -tags netgo -o release/linux/arm/drone-webhook"
   environment:
     CGO_ENABLED: 0
     GO111MODULE: on
@@ -227,7 +233,7 @@ steps:
   pull: always
   image: golang:1.11
   commands:
-  - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/linux/arm/drone-webhook"
+  - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v}\" -a -tags netgo -o release/linux/arm/drone-webhook"
   environment:
     CGO_ENABLED: 0
     GO111MODULE: on
@@ -279,8 +285,8 @@ steps:
 trigger:
   ref:
   - refs/heads/master
-  - "refs/pulls/**"
   - "refs/tags/**"
+  - "refs/pull/**"
 
 depends_on:
 - testing
