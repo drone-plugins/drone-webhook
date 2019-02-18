@@ -34,6 +34,12 @@ volumes:
 - name: gopath
   temp: {}
 
+trigger:
+  ref:
+  - refs/heads/master
+  - "refs/tags/**"
+  - "refs/pull/**"
+
 ---
 kind: pipeline
 name: windows-1803
@@ -48,7 +54,7 @@ steps:
   pull: always
   image: golang:1.11-windowsservercore-1803
   commands:
-  - "go build -v -ldflags \"-X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/windows/amd64/drone-webhook.exe"
+  - "go build -v -ldflags \"-X main.version=${DRONE_COMMIT_SHA:0:8}\" -a -tags netgo -o release/windows/amd64/drone-webhook.exe"
   environment:
     CGO_ENABLED: 0
     GO111MODULE: on
@@ -61,7 +67,7 @@ steps:
   pull: always
   image: golang:1.11-windowsservercore-1803
   commands:
-  - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/windows/amd64/drone-webhook.exe"
+  - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v}\" -a -tags netgo -o release/windows/amd64/drone-webhook.exe"
   environment:
     CGO_ENABLED: 0
     GO111MODULE: on
@@ -124,8 +130,8 @@ volumes:
 trigger:
   ref:
   - refs/heads/master
-  - "refs/pulls/**"
   - "refs/tags/**"
+  - "refs/pull/**"
 
 depends_on:
 - testing
@@ -144,7 +150,7 @@ steps:
   pull: always
   image: golang:1.11-windowsservercore-1809
   commands:
-  - "go build -v -ldflags \"-X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/windows/amd64/drone-webhook.exe"
+  - "go build -v -ldflags \"-X main.version=${DRONE_COMMIT_SHA:0:8}\" -a -tags netgo -o release/windows/amd64/drone-webhook.exe"
   environment:
     CGO_ENABLED: 0
     GO111MODULE: on
@@ -157,7 +163,7 @@ steps:
   pull: always
   image: golang:1.11-windowsservercore-1809
   commands:
-  - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/windows/amd64/drone-webhook.exe"
+  - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v}\" -a -tags netgo -o release/windows/amd64/drone-webhook.exe"
   environment:
     CGO_ENABLED: 0
     GO111MODULE: on
@@ -220,8 +226,8 @@ volumes:
 trigger:
   ref:
   - refs/heads/master
-  - "refs/pulls/**"
   - "refs/tags/**"
+  - "refs/pull/**"
 
 depends_on:
 - testing
