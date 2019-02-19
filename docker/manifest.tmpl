@@ -12,11 +12,6 @@ manifests:
       architecture: amd64
       os: linux
   -
-    image: plugins/webhook:{{#if build.tag}}{{trimPrefix "v" build.tag}}-{{/if}}linux-i386
-    platform:
-      architecture: 386
-      os: linux
-  -
     image: plugins/webhook:{{#if build.tag}}{{trimPrefix "v" build.tag}}-{{/if}}linux-arm64
     platform:
       architecture: arm64
