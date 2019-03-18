@@ -66,6 +66,10 @@ func (p Plugin) Exec() error {
 		b   []byte
 	)
 
+	if len(p.Config.URLs) == 0 {
+		return fmt.Errorf("You must provide at least one url")
+	}
+
 	if p.Config.Template == "" {
 		data := struct {
 			Repo  Repo  `json:"repo"`
