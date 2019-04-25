@@ -91,7 +91,7 @@ steps:
     password:
       from_secret: docker_password
     repo: plugins/webhook
-    tags: windows-1803
+    tags: windows-1803-amd64
     username:
       from_secret: docker_username
   volumes:
@@ -106,7 +106,7 @@ steps:
   image: plugins/docker
   settings:
     auto_tag: true
-    auto_tag_suffix: windows-1803
+    auto_tag_suffix: windows-1803-amd64
     daemon_off: true
     dockerfile: docker/Dockerfile.windows.1803
     password:
@@ -187,7 +187,7 @@ steps:
     password:
       from_secret: docker_password
     repo: plugins/webhook
-    tags: windows-1809
+    tags: windows-1809-amd64
     username:
       from_secret: docker_username
   volumes:
@@ -202,7 +202,7 @@ steps:
   image: plugins/docker
   settings:
     auto_tag: true
-    auto_tag_suffix: windows-1809
+    auto_tag_suffix: windows-1809-amd64
     daemon_off: true
     dockerfile: docker/Dockerfile.windows.1809
     password:
