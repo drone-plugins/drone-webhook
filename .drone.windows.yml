@@ -10,7 +10,7 @@ platform:
 steps:
 - name: vet
   pull: always
-  image: golang:1.11-windowsservercore-1803
+  image: golang:1.12-windowsservercore-1803
   commands:
   - go vet ./...
   environment:
@@ -21,7 +21,7 @@ steps:
 
 - name: test
   pull: always
-  image: golang:1.11-windowsservercore-1803
+  image: golang:1.12-windowsservercore-1803
   commands:
   - go test -cover ./...
   environment:
@@ -52,7 +52,7 @@ platform:
 steps:
 - name: build-push
   pull: always
-  image: golang:1.11-windowsservercore-1803
+  image: golang:1.12-windowsservercore-1803
   commands:
   - "go build -v -ldflags \"-X main.version=${DRONE_COMMIT_SHA:0:8}\" -a -tags netgo -o release/windows/amd64/drone-webhook.exe"
   environment:
@@ -65,7 +65,7 @@ steps:
 
 - name: build-tag
   pull: always
-  image: golang:1.11-windowsservercore-1803
+  image: golang:1.12-windowsservercore-1803
   commands:
   - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v}\" -a -tags netgo -o release/windows/amd64/drone-webhook.exe"
   environment:
@@ -77,13 +77,13 @@ steps:
 
 - name: executable
   pull: always
-  image: golang:1.11-windowsservercore-1803
+  image: golang:1.12-windowsservercore-1803
   commands:
   - ./release/windows/amd64/drone-webhook.exe --help
 
 - name: dryrun
   pull: always
-  image: plugins/docker:windows-1803
+  image: plugins/docker
   settings:
     daemon_off: true
     dockerfile: docker/Dockerfile.windows.1803
@@ -103,7 +103,7 @@ steps:
 
 - name: publish
   pull: always
-  image: plugins/docker:windows-1803
+  image: plugins/docker
   settings:
     auto_tag: true
     auto_tag_suffix: windows-1803
@@ -148,7 +148,7 @@ platform:
 steps:
 - name: build-push
   pull: always
-  image: golang:1.11-windowsservercore-1809
+  image: golang:1.12-windowsservercore-1809
   commands:
   - "go build -v -ldflags \"-X main.version=${DRONE_COMMIT_SHA:0:8}\" -a -tags netgo -o release/windows/amd64/drone-webhook.exe"
   environment:
@@ -161,7 +161,7 @@ steps:
 
 - name: build-tag
   pull: always
-  image: golang:1.11-windowsservercore-1809
+  image: golang:1.12-windowsservercore-1809
   commands:
   - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v}\" -a -tags netgo -o release/windows/amd64/drone-webhook.exe"
   environment:
@@ -173,13 +173,13 @@ steps:
 
 - name: executable
   pull: always
-  image: golang:1.11-windowsservercore-1809
+  image: golang:1.12-windowsservercore-1809
   commands:
   - ./release/windows/amd64/drone-webhook.exe --help
 
 - name: dryrun
   pull: always
-  image: plugins/docker:windows-1809
+  image: plugins/docker
   settings:
     daemon_off: true
     dockerfile: docker/Dockerfile.windows.1809
@@ -199,7 +199,7 @@ steps:
 
 - name: publish
   pull: always
-  image: plugins/docker:windows-1809
+  image: plugins/docker
   settings:
     auto_tag: true
     auto_tag_suffix: windows-1809
