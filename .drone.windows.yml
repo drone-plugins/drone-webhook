@@ -257,7 +257,7 @@ steps:
   pull: always
   image: plugins/webhook
   settings:
-    url:
+    urls:
       from_secret: microbadger_url
 
 trigger:
