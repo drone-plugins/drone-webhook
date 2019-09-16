@@ -362,8 +362,7 @@ def gitter():
     'trigger': {
       'ref': [
         'refs/heads/master',
-        'refs/tags/**',
-        'refs/pull/**'
+        'refs/tags/**'
       ],
       'status': [
         'failure'
