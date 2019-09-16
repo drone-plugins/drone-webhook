@@ -1,14 +1,77 @@
 package main
 
 import (
-	"log"
 	"os"
 
+	"github.com/drone-plugins/drone-plugin-lib/pkg/urfave"
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
 var (
 	version = "unknown"
+)
+
+const (
+	// MethodFlag defines the method flag name
+	MethodFlag = "method"
+
+	// MethodEnvVar defines the method env var
+	MethodEnvVar = "PLUGIN_METHOD"
+
+	// UsernameFlag defines the username flag name
+	UsernameFlag = "username"
+
+	// UsernameEnvVar defines the username env var
+	UsernameEnvVar = "PLUGIN_USERNAME,WEBHOOK_USERNAME"
+
+	// PasswordFlag defines the password flag name
+	PasswordFlag = "password"
+
+	// PasswordEnvVar defines the password env var
+	PasswordEnvVar = "PLUGIN_PASSWORD,WEBHOOK_PASSWORD"
+
+	// ContentTypeFlag defines the content type flag name
+	ContentTypeFlag = "content-type"
+
+	// ContentTypeEnvVar defines the content type env var
+	ContentTypeEnvVar = "PLUGIN_CONTENT_TYPE"
+
+	// TemplateFlag defines the template flag name
+	TemplateFlag = "template"
+
+	// TemplateEnvVar defines the template env var
+	TemplateEnvVar = "PLUGIN_TEMPLATE"
+
+	// HeadersFlag defines the headers flag name
+	HeadersFlag = "headers"
+
+	// HeadersEnvVar defines the headers env var
+	HeadersEnvVar = "PLUGIN_HEADERS"
+
+	// URLsFlag defines the urls flag name
+	URLsFlag = "urls"
+
+	// URLsEnvVar defines the urls env var
+	URLsEnvVar = "PLUGIN_URLS,PLUGIN_URL,WEBHOOK_URLS,WEBHOOK_URL"
+
+	// ValidResponseCodesFlag defines the valid response codes flag name
+	ValidResponseCodesFlag = "valid-response-codes"
+
+	// ValidResponseCodesEnvVar defines the valid response codes env var
+	ValidResponseCodesEnvVar = "PLUGIN_VALID_RESPONSE_CODES"
+
+	// DebugFlag defines the debug flag name
+	DebugFlag = "debug"
+
+	// DebugEnvVar defines the debug env var
+	DebugEnvVar = "PLUGIN_DEBUG"
+
+	// SkipVerifyFlag defines the skip verify flag name
+	SkipVerifyFlag = "skip-verify"
+
+	// SkipVerifyEnvVar defines the skip verify env var
+	SkipVerifyEnvVar = "PLUGIN_SKIP_VERIFY"
 )
 
 func main() {
@@ -19,179 +82,120 @@ func main() {
 	app.Version = version
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:   "method",
+			Name:   MethodFlag,
 			Usage:  "webhook method",
-			EnvVar: "PLUGIN_METHOD",
+			EnvVar: MethodEnvVar,
 			Value:  "POST",
 		},
 		cli.StringFlag{
-			Name:   "username",
+			Name:   UsernameFlag,
 			Usage:  "username for basic auth",
-			EnvVar: "PLUGIN_USERNAME,WEBHOOK_USERNAME",
+			EnvVar: UsernameEnvVar,
 		},
 		cli.StringFlag{
-			Name:   "password",
+			Name:   PasswordFlag,
 			Usage:  "password for basic auth",
-			EnvVar: "PLUGIN_PASSWORD,WEBHOOK_PASSWORD",
+			EnvVar: PasswordEnvVar,
 		},
 		cli.StringFlag{
-			Name:   "content-type",
+			Name:   ContentTypeFlag,
 			Usage:  "content type",
-			EnvVar: "PLUGIN_CONTENT_TYPE",
+			EnvVar: ContentTypeEnvVar,
 			Value:  "application/json",
 		},
 		cli.StringFlag{
-			Name:   "template",
+			Name:   TemplateFlag,
 			Usage:  "custom template for webhook",
-			EnvVar: "PLUGIN_TEMPLATE",
+			EnvVar: TemplateEnvVar,
 		},
 		cli.StringSliceFlag{
-			Name:   "headers",
+			Name:   HeadersFlag,
 			Usage:  "custom headers key map",
-			EnvVar: "PLUGIN_HEADERS",
+			EnvVar: HeadersEnvVar,
 		},
 		cli.StringSliceFlag{
-			Name:   "urls",
+			Name:   URLsFlag,
 			Usage:  "list of urls to perform the action on",
-			EnvVar: "PLUGIN_URLS,WEBHOOK_URLS",
+			EnvVar: URLsEnvVar,
 		},
 		cli.IntSliceFlag{
-			Name:   "valid-response-codes",
+			Name:   ValidResponseCodesFlag,
 			Usage:  "list of valid http response codes",
-			EnvVar: "PLUGIN_VALID_RESPONSE_CODES",
+			EnvVar: ValidResponseCodesEnvVar,
 		},
 		cli.BoolFlag{
-			Name:   "debug",
+			Name:   DebugFlag,
 			Usage:  "enable debug information",
-			EnvVar: "PLUGIN_DEBUG",
+			EnvVar: DebugEnvVar,
 		},
 		cli.BoolFlag{
-			Name:   "skip-verify",
+			Name:   SkipVerifyFlag,
 			Usage:  "skip ssl verification",
-			EnvVar: "PLUGIN_SKIP_VERIFY",
-		},
-		cli.StringFlag{
-			Name:   "repo.owner",
-			Usage:  "repository owner",
-			EnvVar: "DRONE_REPO_OWNER",
-		},
-		cli.StringFlag{
-			Name:   "repo.name",
-			Usage:  "repository name",
-			EnvVar: "DRONE_REPO_NAME",
-		},
-		cli.StringFlag{
-			Name:   "commit.sha",
-			Usage:  "git commit sha",
-			EnvVar: "DRONE_COMMIT_SHA",
-		},
-		cli.StringFlag{
-			Name:   "commit.ref",
-			Value:  "refs/heads/master",
-			Usage:  "git commit ref",
-			EnvVar: "DRONE_COMMIT_REF",
-		},
-		cli.StringFlag{
-			Name:   "commit.branch",
-			Value:  "master",
-			Usage:  "git commit branch",
-			EnvVar: "DRONE_COMMIT_BRANCH",
-		},
-		cli.StringFlag{
-			Name:   "commit.author",
-			Usage:  "git author name",
-			EnvVar: "DRONE_COMMIT_AUTHOR",
-		},
-		cli.StringFlag{
-			Name:   "commit.message",
-			Usage:  "commit message",
-			EnvVar: "DRONE_COMMIT_MESSAGE",
-		},
-		cli.StringFlag{
-			Name:   "build.event",
-			Value:  "push",
-			Usage:  "build event",
-			EnvVar: "DRONE_BUILD_EVENT",
-		},
-		cli.IntFlag{
-			Name:   "build.number",
-			Usage:  "build number",
-			EnvVar: "DRONE_BUILD_NUMBER",
-		},
-		cli.StringFlag{
-			Name:   "build.status",
-			Usage:  "build status",
-			Value:  "success",
-			EnvVar: "DRONE_BUILD_STATUS",
-		},
-		cli.StringFlag{
-			Name:   "build.link",
-			Usage:  "build link",
-			EnvVar: "DRONE_BUILD_LINK",
-		},
-		cli.Int64Flag{
-			Name:   "build.started",
-			Usage:  "build started",
-			EnvVar: "DRONE_BUILD_STARTED",
-		},
-		cli.Int64Flag{
-			Name:   "build.created",
-			Usage:  "build created",
-			EnvVar: "DRONE_BUILD_CREATED",
-		},
-		cli.StringFlag{
-			Name:   "build.tag",
-			Usage:  "build tag",
-			EnvVar: "DRONE_TAG",
-		},
-		cli.Int64Flag{
-			Name:   "job.started",
-			Usage:  "job started",
-			EnvVar: "DRONE_JOB_STARTED",
+			EnvVar: SkipVerifyEnvVar,
 		},
 	}
 
+	flags := [][]cli.Flag{
+		urfave.BuildFlags(),
+		urfave.RepoFlags(),
+		urfave.CommitFlags(),
+		urfave.StageFlags(),
+		urfave.StepFlags(),
+		urfave.SemVerFlags(),
+	}
+
+	for _, flagz := range flags {
+		app.Flags = append(
+			app.Flags,
+			flagz...,
+		)
+	}
+
 	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
+		os.Exit(1)
 	}
 }
 
 func run(c *cli.Context) error {
 	plugin := Plugin{
-		Repo: Repo{
-			Owner: c.String("repo.owner"),
-			Name:  c.String("repo.name"),
-		},
-		Build: Build{
-			Tag:     c.String("build.tag"),
-			Number:  c.Int("build.number"),
-			Event:   c.String("build.event"),
-			Status:  c.String("build.status"),
-			Commit:  c.String("commit.sha"),
-			Ref:     c.String("commit.ref"),
-			Branch:  c.String("commit.branch"),
-			Author:  c.String("commit.author"),
-			Message: c.String("commit.message"),
-			Link:    c.String("build.link"),
-			Started: c.Int64("build.started"),
-			Created: c.Int64("build.created"),
-		},
-		Job: Job{
-			Started: c.Int64("job.started"),
-		},
+		Build:  urfave.BuildFromContext(c),
+		Repo:   urfave.RepoFromContext(c),
+		Commit: urfave.CommitFromContext(c),
+		Stage:  urfave.StageFromContext(c),
+		Step:   urfave.StepFromContext(c),
+		SemVer: urfave.SemVerFromContext(c),
+
 		Config: Config{
-			Method:      c.String("method"),
-			Username:    c.String("username"),
-			Password:    c.String("password"),
-			ContentType: c.String("content-type"),
-			Template:    c.String("template"),
-			Headers:     c.StringSlice("headers"),
-			URLs:        c.StringSlice("urls"),
-			ValidCodes:  c.IntSlice("valid-response-codes"),
-			Debug:       c.Bool("debug"),
-			SkipVerify:  c.Bool("skip-verify"),
+			Method:      c.String(MethodFlag),
+			Username:    c.String(UsernameFlag),
+			Password:    c.String(PasswordFlag),
+			ContentType: c.String(ContentTypeFlag),
+			Template:    c.String(TemplateFlag),
+			Headers:     c.StringSlice(HeadersFlag),
+			URLs:        c.StringSlice(URLsFlag),
+			ValidCodes:  c.IntSlice(ValidResponseCodesFlag),
+			Debug:       c.Bool(DebugFlag),
+			SkipVerify:  c.Bool(SkipVerifyFlag),
 		},
 	}
 
+	if plugin.Config.Debug {
+		log.SetLevel(log.DebugLevel)
+	}
+
+	if len(plugin.Config.URLs) == 0 {
+		log.Fatal("You must provide at least one url")
+	}
+
 	return plugin.Exec()
+}
+
+func init() {
+	log.SetFormatter(&log.TextFormatter{
+		DisableColors:    true,
+		DisableTimestamp: true,
+	})
+
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.InfoLevel)
 }

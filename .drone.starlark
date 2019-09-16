@@ -46,6 +46,34 @@ def testing():
         ]
       },
       {
+        'name': 'lint',
+        'image': 'golang:1.12',
+        'pull': 'always',
+        'commands': [
+          'go run golang.org/x/lint/golint -set_exit_status ./...'
+        ],
+        'volumes': [
+          {
+            'name': 'gopath',
+            'path': '/go'
+          }
+        ]
+      },
+      {
+        'name': 'staticcheck',
+        'image': 'golang:1.12',
+        'pull': 'always',
+        'commands': [
+          'go run honnef.co/go/tools/cmd/staticcheck ./...'
+        ],
+        'volumes': [
+          {
+            'name': 'gopath',
+            'path': '/go'
+          }
+        ]
+      },
+      {
         'name': 'test',
         'image': 'golang:1.12',
         'pull': 'always',
