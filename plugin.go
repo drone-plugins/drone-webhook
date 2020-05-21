@@ -2,7 +2,10 @@ package main
 
 import (
 	"bytes"
+	"crypto/hmac"
+	"crypto/sha256"
 	"crypto/tls"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -47,6 +50,7 @@ type (
 		ValidCodes  []int
 		Debug       bool
 		SkipVerify  bool
+		Secret      string
 	}
 
 	Job struct {
@@ -116,6 +120,16 @@ func (p Plugin) Exec() error {
 		}
 
 		req.Header.Set("Content-Type", p.Config.ContentType)
+
+		if p.Config.Secret != "" {
+			// generate signature with secret and body
+			h := hmac.New(sha256.New, []byte(p.Config.Secret))
+			h.Write(b)
+			sha := hex.EncodeToString(h.Sum(nil))
+
+			// append signature to headers
+			req.Header.Set("X-Drone-Signature", sha)
+		}
 
 		for _, value := range p.Config.Headers {
 			header := strings.Split(value, "=")

@@ -71,6 +71,11 @@ func main() {
 			EnvVar: "PLUGIN_SKIP_VERIFY",
 		},
 		cli.StringFlag{
+			Name:   "secret",
+			Usage:  "secret to generate signature",
+			EnvVar: "PLUGIN_SECRET,WEBHOOK_SECRET",
+		},
+		cli.StringFlag{
 			Name:   "repo.owner",
 			Usage:  "repository owner",
 			EnvVar: "DRONE_REPO_OWNER",
@@ -196,6 +201,7 @@ func run(c *cli.Context) error {
 			ValidCodes:  c.IntSlice("valid-response-codes"),
 			Debug:       c.Bool("debug"),
 			SkipVerify:  c.Bool("skip-verify"),
+			Secret:      c.String("secret"),
 		},
 	}
 
