@@ -1,7 +1,5 @@
 module github.com/drone-plugins/drone-webhook
 
-go 1.14
-
 require (
 	bou.ke/monkey v1.0.1 // indirect
 	github.com/aymerick/raymond v2.0.2+incompatible // indirect
