@@ -128,7 +128,7 @@ func (p Plugin) Exec() error {
 			sha := hex.EncodeToString(h.Sum(nil))
 
 			// append signature to headers
-			req.Header.Set("X-Drone-Signature", sha)
+			req.Header.Set("X-Drone-Signature", fmt.Sprintf("sha256=%s", sha))
 		}
 
 		for _, value := range p.Config.Headers {
