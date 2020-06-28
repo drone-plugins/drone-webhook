@@ -71,13 +71,13 @@ func main() {
 			EnvVar: "PLUGIN_SKIP_VERIFY",
 		},
 		cli.StringFlag{
-			Name:   "signature_header",
+			Name:   "signature-header",
 			Usage:  "header name to use in request",
 			EnvVar: "PLUGIN_SIGNATURE_HEADER,WEBHOOK_SIGNATURE_HEADER",
 			Value:  "X-Drone-Signature",
 		},
 		cli.StringFlag{
-			Name:   "signature_secret",
+			Name:   "signature-secret",
 			Usage:  "secret to generate signature",
 			EnvVar: "PLUGIN_SIGNATURE_SECRET,WEBHOOK_SIGNATURE_SECRET",
 		},
