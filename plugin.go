@@ -2,7 +2,10 @@ package main
 
 import (
 	"bytes"
+	"crypto/hmac"
+	"crypto/sha256"
 	"crypto/tls"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -37,16 +40,18 @@ type (
 	}
 
 	Config struct {
-		Method      string
-		Username    string
-		Password    string
-		ContentType string
-		Template    string
-		Headers     []string
-		URLs        []string
-		ValidCodes  []int
-		Debug       bool
-		SkipVerify  bool
+		Method          string
+		Username        string
+		Password        string
+		ContentType     string
+		Template        string
+		Headers         []string
+		URLs            []string
+		ValidCodes      []int
+		Debug           bool
+		SkipVerify      bool
+		SignatureHeader string
+		SignatureSecret string
 	}
 
 	Job struct {
@@ -116,6 +121,16 @@ func (p Plugin) Exec() error {
 		}
 
 		req.Header.Set("Content-Type", p.Config.ContentType)
+
+		if p.Config.SignatureSecret != "" {
+			// generate signature with secret and body
+			h := hmac.New(sha256.New, []byte(p.Config.SignatureSecret))
+			h.Write(b)
+			sha := hex.EncodeToString(h.Sum(nil))
+
+			// append signature to headers
+			req.Header.Set(p.Config.SignatureHeader, fmt.Sprintf("sha256=%s", sha))
+		}
 
 		for _, value := range p.Config.Headers {
 			header := strings.Split(value, "=")
