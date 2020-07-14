@@ -207,8 +207,8 @@ func run(c *cli.Context) error {
 			ValidCodes:      c.IntSlice("valid-response-codes"),
 			Debug:           c.Bool("debug"),
 			SkipVerify:      c.Bool("skip-verify"),
-			SignatureHeader: c.String("signature_header"),
-			SignatureSecret: c.String("signature_secret"),
+			SignatureHeader: c.String("signature-header"),
+			SignatureSecret: c.String("signature-secret"),
 		},
 	}
 
