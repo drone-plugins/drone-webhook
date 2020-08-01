@@ -34,11 +34,17 @@ func main() {
 			Usage:  "password for basic auth",
 			EnvVar: "PLUGIN_PASSWORD,WEBHOOK_PASSWORD",
 		},
-                cli.StringFlag{
-			Name:   "token",
-			Usage:  "token for Bearer token auth",
-			EnvVar: "PLUGIN_TOKEN,WEBHOOK_TOKEN",
-                },
+		cli.StringFlag{
+			Name:   "token-value",
+			Usage:  "token value",
+			EnvVar: "PLUGIN_TOKEN_VALUE,WEBHOOK_TOKEN_VALUE",
+		},
+		cli.StringFlag{
+			Name:   "token-type",
+			Usage:  "type of token",
+			EnvVar: "PLUGIN_TOKEN_TYPE,WEBHOOK_TOKEN_TYPE",
+			Value:  "Bearer",
+		},
 		cli.StringFlag{
 			Name:   "content-type",
 			Usage:  "content type",
@@ -205,7 +211,8 @@ func run(c *cli.Context) error {
 			Method:          c.String("method"),
 			Username:        c.String("username"),
 			Password:        c.String("password"),
-			Token:           c.String("token"),
+			TokenValue:      c.String("token-value"),
+			TokenType:       c.String("token-type"),
 			ContentType:     c.String("content-type"),
 			Template:        c.String("template"),
 			Headers:         c.StringSlice("headers"),
