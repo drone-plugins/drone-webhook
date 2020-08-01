@@ -43,6 +43,7 @@ type (
 		Method          string
 		Username        string
 		Password        string
+		Token           string
 		ContentType     string
 		Template        string
 		Headers         []string
@@ -140,6 +141,11 @@ func (p Plugin) Exec() error {
 		if p.Config.Username != "" && p.Config.Password != "" {
 			req.SetBasicAuth(p.Config.Username, p.Config.Password)
 		}
+
+		if p.Config.Token != "" {
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", p.Config.Token))
+		}
+
 
 		client := http.DefaultClient
 
