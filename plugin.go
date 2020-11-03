@@ -23,6 +23,13 @@ type (
 		Name  string `json:"name"`
 	}
 
+	Stage struct {
+		Type	string	`json:"type"`
+		Kind	string	`json:"kind"`
+		Name 	string 	`json:"name"`
+		Status 	string 	`json:"status"`
+	}
+
 	Build struct {
 		Tag      string `json:"tag"`
 		Event    string `json:"event"`
@@ -64,6 +71,7 @@ type (
 		Repo   Repo
 		Build  Build
 		Config Config
+		Stage  Stage
 		Job    Job
 	}
 )
@@ -82,7 +90,8 @@ func (p Plugin) Exec() error {
 		data := struct {
 			Repo  Repo  `json:"repo"`
 			Build Build `json:"build"`
-		}{p.Repo, p.Build}
+			Stage Stage	`json:"stage"`
+		}{p.Repo, p.Build, p.Stage}
 
 		if err := json.NewEncoder(&buf).Encode(&data); err != nil {
 			fmt.Printf("Error: Failed to encode JSON payload. %s\n", err)

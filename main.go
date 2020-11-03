@@ -177,6 +177,26 @@ func main() {
 			Usage:  "job started",
 			EnvVar: "DRONE_JOB_STARTED",
 		},
+		cli.StringFlag{
+			Name:   "stage.status",
+			Usage:  "stage status",
+			EnvVar: "DRONE_STAGE_STATUS",
+		},
+		cli.StringFlag{
+			Name:   "stage.name",
+			Usage:  "stage name",
+			EnvVar: "DRONE_STAGE_NAME",
+		},
+		cli.StringFlag{
+			Name:   "stage.type",
+			Usage:  "stage type",
+			EnvVar: "DRONE_STAGE_TYPE",
+		},
+		cli.StringFlag{
+			Name:   "stage.kind",
+			Usage:  "stage kind",
+			EnvVar: "DRONE_STAGE_KIND",
+		},
 	}
 
 	if _, err := os.Stat("/run/drone/env"); err == nil {
@@ -227,6 +247,12 @@ func run(c *cli.Context) error {
 			SkipVerify:      c.Bool("skip-verify"),
 			SignatureHeader: c.String("signature-header"),
 			SignatureSecret: c.String("signature-secret"),
+		},
+		Stage: Stage{
+			Type:   c.String("stage.type"),
+			Name:   c.String("stage.name"),
+			Status: c.String("stage.status"),
+			Kind:   c.String("stage.kind"),
 		},
 	}
 
