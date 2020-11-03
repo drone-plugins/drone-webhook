@@ -24,10 +24,10 @@ type (
 	}
 
 	Stage struct {
-		Type	string	`json:"type"`
-		Kind	string	`json:"kind"`
-		Name 	string 	`json:"name"`
-		Status 	string 	`json:"status"`
+		Type   string `json:"type"`
+		Kind   string `json:"kind"`
+		Name   string `json:"name"`
+		Status string `json:"status"`
 	}
 
 	Build struct {
@@ -90,7 +90,7 @@ func (p Plugin) Exec() error {
 		data := struct {
 			Repo  Repo  `json:"repo"`
 			Build Build `json:"build"`
-			Stage Stage	`json:"stage"`
+			Stage Stage `json:"stage"`
 		}{p.Repo, p.Build, p.Stage}
 
 		if err := json.NewEncoder(&buf).Encode(&data); err != nil {
