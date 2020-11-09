@@ -29,6 +29,7 @@ type Settings struct {
 	Headers     cli.StringSlice
 	URLs        cli.StringSlice
 	ValidCodes  cli.StringSlice
+	payload     []byte
 }
 
 // Validate handles the settings validation of the plugin.
@@ -44,21 +45,32 @@ func (p *Plugin) Validate() error {
 		}
 	}
 
+	if p.settings.Template == "" {
+		res, err := json.Marshal(&p.pipeline)
+
+		if err != nil {
+			return fmt.Errorf("failed to generate json response: %w", err)
+		}
+
+		p.settings.payload = res
+	} else {
+		res, err := template.RenderTrim(p.settings.Template, p)
+		if err != nil {
+			return fmt.Errorf("failed to parse response template: %w", err)
+		}
+
+		p.settings.payload = []byte(res)
+	}
+
 	return nil
 }
 
 // Execute provides the implementation of the plugin.
 func (p *Plugin) Execute() error {
-	b, err := p.payload()
-
-	if err != nil {
-		return err
-	}
-
 	for i, raw := range p.settings.URLs.Value() {
 		uri, _ := url.Parse(raw)
 
-		req, err := http.NewRequest(p.settings.Method, uri.String(), bytes.NewReader(b))
+		req, err := http.NewRequest(p.settings.Method, uri.String(), bytes.NewReader(p.settings.payload))
 		if err != nil {
 			return fmt.Errorf("failed to create http request: %w", err)
 		}
@@ -94,7 +106,7 @@ func (p *Plugin) Execute() error {
 				Method:   req.Method,
 				Header:   req.Header,
 				Status:   resp.Status,
-				Request:  string(b),
+				Request:  string(p.settings.payload),
 				Response: string(body),
 			})
 			if err != nil {
@@ -111,23 +123,4 @@ func (p *Plugin) Execute() error {
 	}
 
 	return nil
-}
-
-func (p *Plugin) payload() ([]byte, error) {
-	if p.settings.Template == "" {
-		res, err := json.Marshal(&p.pipeline)
-
-		if err != nil {
-			return []byte{}, fmt.Errorf("failed to generate json response: %w", err)
-		}
-
-		return res, nil
-	}
-
-	res, err := template.RenderTrim(p.settings.Template, p)
-	if err != nil {
-		return []byte{}, fmt.Errorf("failed to parse response template: %w", err)
-	}
-
-	return []byte(res), nil
 }
