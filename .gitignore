@@ -1,4 +1,5 @@
-release/
+/release/
+/drone-webhook*
 
 coverage.out
-drone-webhook
+.drone.yml
