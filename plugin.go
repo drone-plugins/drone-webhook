@@ -135,7 +135,7 @@ func (p Plugin) Exec() error {
 		}
 
 		for _, value := range p.Config.Headers {
-			header := strings.Split(value, "=")
+			header := strings.SplitN(value, "=", 2)
 			req.Header.Set(header[0], header[1])
 		}
 
