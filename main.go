@@ -180,7 +180,7 @@ func main() {
 	}
 
 	if _, err := os.Stat("/run/drone/env"); err == nil {
-		godotenv.Overload("/run/drone/env")
+		_ = godotenv.Overload("/run/drone/env")
 	}
 
 	if err := app.Run(os.Args); err != nil {

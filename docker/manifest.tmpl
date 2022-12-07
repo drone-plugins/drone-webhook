@@ -14,17 +14,13 @@ manifests:
     platform:
       architecture: arm64
       os: linux
-  - image: plugins/webhook:{{#if build.tag}}{{trimPrefix "v" build.tag}}-{{/if}}linux-arm
-    platform:
-      architecture: arm
-      os: linux
   - image: plugins/webhook:{{#if build.tag}}{{trimPrefix "v" build.tag}}-{{/if}}windows-1809-amd64
     platform:
       architecture: amd64
       os: windows
       version: 1809
-  - image: plugins/webhook:{{#if build.tag}}{{trimPrefix "v" build.tag}}-{{/if}}windows-1903-amd64
+  - image: plugins/webhook:{{#if build.tag}}{{trimPrefix "v" build.tag}}-{{/if}}windows-ltsc2022-amd64
     platform:
       architecture: amd64
       os: windows
-      version: 1903
+      version: ltsc2022
