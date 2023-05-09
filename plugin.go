@@ -136,7 +136,8 @@ func (p Plugin) Exec() error {
 
 		for _, value := range p.Config.Headers {
 			header := strings.Split(value, "=")
-			req.Header.Set(header[0], header[1])
+			headerName, header := header[0], header[1:]
+			req.Header.Set(headerName, strings.Join(header, "="))
 		}
 
 		if p.Config.Username != "" && p.Config.Password != "" {
