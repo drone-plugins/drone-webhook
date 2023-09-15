@@ -8,7 +8,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -169,7 +169,7 @@ func (p Plugin) Exec() error {
 		defer resp.Body.Close()
 
 		if p.Config.Debug || resp.StatusCode >= http.StatusBadRequest {
-			body, err := ioutil.ReadAll(resp.Body)
+			body, err := io.ReadAll(resp.Body)
 
 			if err != nil {
 				fmt.Printf("Error: Failed to read the HTTP response body. %s\n", err)
